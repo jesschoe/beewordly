@@ -1,7 +1,6 @@
 * {
     font-family: 'Ribeye Marrow', cursive;
     text-align: center;
-    
 }
 
 header {
@@ -14,11 +13,23 @@ body {
     flex-flow: column;
 }
 
+h1 {
+    font-size: 2.7em;
+}
+
 nav {
     background-color: lightgray;
     display: flex;
     justify-content: center;
     padding: 10px;
+}
+
+.game-nav {
+    background-color: lightgray;
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    margin: -10px;
 }
 
 div {
@@ -50,15 +61,16 @@ button {
     margin: 10px;
     border-radius: 10px;
     box-shadow: 3px 3px 10px gray;
-    
+    font-size: 1.2em;
 }
+
 button:hover {
-    background-color: white;
+    box-shadow: none;
   }
 
 .game-buttons {
     width: 400px;
-
+    font-size: 1.5em;
 }
 
 .search-button {
@@ -66,7 +78,11 @@ button:hover {
     
 }
 
-#content {
+.content-container {
     border: 2px solid lightgray;
     border-radius: 10px;
+    width: 380px;
+    margin: 30px auto;
+    padding: 10px;
+   
 }

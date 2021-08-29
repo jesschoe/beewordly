@@ -28,22 +28,28 @@ async function getDictEntry(word) {
         let pos = res.data[0].fl;
         let audio = res.data[0].hwi.prs[0].sound;
         let audioName = audio.audio;
-        let audioSub = '';
+
+        let firstChar = audioName[0].charAt(0);
+
+      //do your stuff
 
         // get data for correct format of audio URL of word
-        if (audioName.substring(0,2) === 'g') {
+        if (audioName.substring(0,2) === 'gg') {
             audioSub = 'gg';
         } else if (audioName.substring(0,3) === 'bix') {
             audioSub = 'bix';
+        } else if (firstChar <='9' && firstChar >='0') {
+            audioSub = 'number';
         } else {
             audioSub = audioName[0];
         }
 
         let audioURL = `${audioBaseURL}${audioSub}/${audioName}.mp3`;
-
+        
         append('part of speech', pos);
         append('definition', definition);
-        
+
+        console.log(audioURL)
 
         return {
             definition,
@@ -107,7 +113,7 @@ function append(keyword, data) {
 const searchInput = document.createElement('input')
 function launchLearnWords(event) {
     
-    // contentName.innerHTML = '<h2>Learn Words</h2>';
+    contentName.innerHTML = '<h2>Learn Words</h2>';
     contentDiv.innerHTML = '<p>Search for words to learn their part of speech, meaning, and synonyms</p>'
 
     // searchInput = document.createElement('input');
@@ -124,7 +130,6 @@ function launchLearnWords(event) {
 function searchDict(event) {
     event.preventDefault;
     const inputValue = searchInput.value;
-    console.log(inputValue)
     getDictEntry(inputValue);
 }
 

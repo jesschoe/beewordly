@@ -107,6 +107,8 @@ async function getDictEntry(word) {
             audioSub = 'gg';
         } else if (audioName.substring(0,3) === 'bix') {
             audioSub = 'bix';
+        } else if (firstChar <='9' && firstChar >='0') {
+            audioSub = 'number';
         } else {
             audioSub = audioName[0];
         }
