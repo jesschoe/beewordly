@@ -1,0 +1,72 @@
+* {
+    font-family: 'Ribeye Marrow', cursive;
+    text-align: center;
+    
+}
+
+header {
+    background-color: #F1EF9E;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    flex-flow: column;
+}
+
+nav {
+    background-color: lightgray;
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+
+div {
+   
+}
+
+h1 {
+    display: inline;
+}
+
+p {
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+img {
+    width: 40px;
+    transform: rotate(45deg);
+}
+
+footer {
+    background-color: #F1EF9E;
+    height: 200px;
+}
+
+button {
+    height: 100px;
+    width: 120px;
+    border: none;
+    margin: 10px;
+    border-radius: 10px;
+    box-shadow: 3px 3px 10px gray;
+    
+}
+button:hover {
+    background-color: white;
+  }
+
+.game-buttons {
+    width: 400px;
+
+}
+
+.search-button {
+    height: 50px;
+    
+}
+
+#content {
+    border: 2px solid lightgray;
+    border-radius: 10px;
+}
