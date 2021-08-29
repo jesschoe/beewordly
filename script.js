@@ -1,7 +1,7 @@
 const dictBaseURL = 'https://www.dictionaryapi.com/api/v3/references/collegiate/json/';
 const dictKey = '?key=9aed0fc9-9efb-4167-83b0-c665d40f56b7';
 const audioBaseURL = 'https://media.merriam-webster.com/audio/prons/en/us/mp3/'
-
+let audioURL = '';
 const thesBaseURL = 'https://www.dictionaryapi.com/api/v3/references/thesaurus/json/';
 const thesKey = '?key=55b8d793-ca1e-4767-9965-51dff650f096'
 
@@ -16,7 +16,7 @@ const spellingBeeBtn = document.querySelector('#spelling-bee');
 console.log(document.body);
 
 learnWordsBtn.addEventListener('click', launchLearnWords);
-flashcardsBtn.addEventListener('click', launchFlashcards);
+flashcardsBtn.addEventListener('click', playAudio);
 myWordsBtn.addEventListener('click', launchMyWords);
 spellingBeeBtn.addEventListener('click', launchSpellingBee);
 
@@ -44,12 +44,12 @@ async function getDictEntry(word) {
             audioSub = audioName[0];
         }
 
-        let audioURL = `${audioBaseURL}${audioSub}/${audioName}.mp3`;
+        audioURL = `${audioBaseURL}${audioSub}/${audioName}.mp3`;
         
         append('part of speech', pos);
         append('definition', definition);
 
-        console.log(audioURL)
+        
 
         return {
             definition,
@@ -104,7 +104,7 @@ function append(keyword, data) {
     contentDiv.appendChild(newContent);
 }
 
-// getDictEntry('affable');
+getDictEntry('affable');
 // getThesEntry('affable');
 // getRandomWord();
 
@@ -131,6 +131,11 @@ function searchDict(event) {
     event.preventDefault;
     const inputValue = searchInput.value;
     getDictEntry(inputValue);
+}
+
+function playAudio(){
+    let audio = new Audio(audioURL);       // seek to the start
+    audio.play();                // play it till it ends
 }
 
 function launchFlashcards() {

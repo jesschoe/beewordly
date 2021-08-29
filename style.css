@@ -11,6 +11,7 @@ body {
     display: flex;
     justify-content: center;
     flex-flow: column;
+    margin: 0;
 }
 
 h1 {
@@ -22,6 +23,7 @@ nav {
     display: flex;
     justify-content: center;
     padding: 10px;
+    
 }
 
 .game-nav {
