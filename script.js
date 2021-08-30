@@ -16,10 +16,10 @@ const spellingBeeBtn = document.querySelector('#spelling-bee');
 console.log(document.body);
 
 let wordObject = {
-    def: '',
-    pos: '',
-    syns: [],
-    audioURL: '',
+    // def: '',
+    // pos: '',
+    // syns: [],
+    // audioURL: '',
 };
 
 learnWordsBtn.addEventListener('click', launchLearnWords);
@@ -31,9 +31,9 @@ async function getDictEntry(word) {
     try{
         // get data for word from dictionary API
         let res = await axios.get(`${dictBaseURL}${word}${dictKey}`);
-        
+
         if (typeof res.data[0] === 'string') {
-            append(`did you mean`,res.data[0])
+            appendData(`did you mean`,res.data[0])
         } else {
             
             let audio = res.data[0].hwi.prs[0].sound;
@@ -52,13 +52,16 @@ async function getDictEntry(word) {
                 audioSub = audioName[0];
             }
 
-            getThesEntry(word)
-            wordObject = {
+            
+            const wordObject = {
                 def: res.data[0].shortdef[0],
                 pos: res.data[0].fl,
                 audioURL: `${audioBaseURL}${audioSub}/${audioName}.mp3`,
+                syns: await getThesEntry(word),
             };
 
+            return wordObject;
+            
         }
        
     } catch (error) {
@@ -73,7 +76,8 @@ async function getDictEntry(word) {
         let res = await axios.get(`${thesBaseURL}${word}${thesKey}`);
         let synonyms = res.data[0].meta.syns[0];
         
-        wordObject.syns = synonyms;
+        
+        return synonyms;
         
         
     } catch (error) {
@@ -81,6 +85,9 @@ async function getDictEntry(word) {
     }
  }
 
+ function getWotd() {
+    getRandomWord();
+ }
  // get random word for word of the day function
  async function getRandomWord() {
     try{
@@ -89,10 +96,9 @@ async function getDictEntry(word) {
         let wotd = res.data[0].word;
         let wotdDef = res.data[0].definition;
         
-        return {
-            wotd, 
-            wotdDef
-        };
+        
+        contentName.innerHTML = `<h2>Word of the Day: ${wotd}<h2>`;
+        appendData('definition', wotdDef);
 
     } catch (error) {
         console.log(error);
@@ -108,10 +114,6 @@ function appendData(keyword, data) {
     newContent.innerText = `${keyword}: ${data}`;
     contentDiv.appendChild(newContent);
 }
-
-// getDictEntry('affable');
-// getThesEntry('affable');
-// getRandomWord();
 
  // Button handlers
 
@@ -137,18 +139,20 @@ function launchLearnWords(event) {
 
 // search dictionary upon input value
 function searchDict(event) {
-    event.preventDefault;
-    contentDiv.innerHTML = '';
-    const inputValue = searchInput.value;
-    
-    getDictEntry(inputValue);
-    searchInput.value = '';
-    appendData('part of speech', wordObject.pos);
-    appendData('definition', wordObject.def);
+    (async () => {
+        event.preventDefault;
+        contentDiv.innerHTML = '';
+        const inputValue = searchInput.value;
+        
+        let wordObj = await getDictEntry(inputValue);
+        searchInput.value = '';
+        
+        appendData('part of speech', wordObj.pos);
+        appendData('definition', wordObj.def);
 
-    let synsStr = (wordObject.syns).join(', ');
-    appendData('synonyms', synsStr)
-    
+        let synsStr = (wordObj.syns).join(', ');
+        appendData('synonyms', synsStr)
+    })()
 }
 
 function playAudio(){
@@ -238,9 +242,7 @@ function launchSpellingBee() {
 
 }
 
-function launchWotd() {
-    getDictEntry('hello');
-}
+
 // const button = document.querySelector('#pronounce');
 // button.addEventListener('click', playAudio(wordAudio))
 
