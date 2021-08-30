@@ -15,6 +15,13 @@ const myWordsBtn = document.querySelector('#my-words');
 const spellingBeeBtn = document.querySelector('#spelling-bee');
 console.log(document.body);
 
+let wordObject = {
+    def: '',
+    pos: '',
+    syns: [],
+    audioURL: '',
+};
+
 learnWordsBtn.addEventListener('click', launchLearnWords);
 flashcardsBtn.addEventListener('click', launchFlashcards);
 myWordsBtn.addEventListener('click', launchMyWords);
@@ -24,7 +31,7 @@ async function getDictEntry(word) {
     try{
         // get data for word from dictionary API
         let res = await axios.get(`${dictBaseURL}${word}${dictKey}`);
-        console.log(res)
+        
         if (typeof res.data[0] === 'string') {
             append(`did you mean`,res.data[0])
         } else {
@@ -45,16 +52,15 @@ async function getDictEntry(word) {
                 audioSub = audioName[0];
             }
 
-            let def = res.data[0].shortdef[0];
-            let pos = res.data[0].fl;
-            let audioURL = `${audioBaseURL}${audioSub}/${audioName}.mp3`;
-            let wordArray = [def, pos, audioURL];
-            append('part of speech', wordArray[1]);
-            append('definition', wordArray[0]);
-            
-            return wordArray;
+            getThesEntry(word)
+            wordObject = {
+                def: res.data[0].shortdef[0],
+                pos: res.data[0].fl,
+                audioURL: `${audioBaseURL}${audioSub}/${audioName}.mp3`,
+            };
+
         }
-        
+       
     } catch (error) {
         console.log(error);
     }
@@ -67,10 +73,9 @@ async function getDictEntry(word) {
         let res = await axios.get(`${thesBaseURL}${word}${thesKey}`);
         let synonyms = res.data[0].meta.syns[0];
         
-        append('synonyms', synonyms);
+        wordObject.syns = synonyms;
         
         
-        return synonyms;
     } catch (error) {
         console.log(error);
     }
@@ -97,7 +102,7 @@ async function getDictEntry(word) {
  // Append data to DOM by keyword and content
 const content = document.querySelector('#content');
 
-function append(keyword, data) {
+function appendData(keyword, data) {
     
     let newContent = document.createElement('p');
     newContent.innerText = `${keyword}: ${data}`;
@@ -136,10 +141,14 @@ function searchDict(event) {
     contentDiv.innerHTML = '';
     const inputValue = searchInput.value;
     
-    let wordArr = getDictEntry(inputValue);
-    
-    
+    getDictEntry(inputValue);
     searchInput.value = '';
+    appendData('part of speech', wordObject.pos);
+    appendData('definition', wordObject.def);
+
+    let synsStr = (wordObject.syns).join(', ');
+    appendData('synonyms', synsStr)
+    
 }
 
 function playAudio(){
@@ -160,11 +169,65 @@ function launchFlashcards() {
     searchDiv.append(textInput);
     searchDiv.append(addBtn);
 
-    // cardBtn.classList.add('card-button');
-    // searchDiv.append(searchInput);
-    // searchDiv.append(searchBtn);
+    addBtn.addEventListener('click', addWords);
+}
 
-    // searchBtn.addEventListener('click', searchDict);
+function addWords(event) {
+    event.preventDefault();
+    const textInput = document.querySelector('input');
+    const cardValue = textInput.value;
+    if(cardValue != "") {
+    cardArray.push(cardValue);
+    // clear input
+    textInput.value = "";
+    appendCardList();
+    }
+}
+
+
+
+function appendCardList() {
+    const cardListDiv = document.querySelector('ol');
+    cardListDiv.innerHTML = '';
+    cardArray.forEach((card, index) => {
+        // Create li item
+        const li = document.createElement("li");
+        li.innerText = card;
+        // Create a delete button
+        const button = document.createElement("button");
+        button.classList.add('search-button');
+        button.addEventListener("click", () => removeCard(index));
+        button.innerText = "remove";
+
+        // Append item to page
+        li.append(button);
+        cardListDiv.appendChild(li);
+    });
+    
+    const flashcardsBtn = document.createElement('button');
+    flashcardsBtn.classList.add('create-button');
+    flashcardsBtn.innerText = 'create flashcards';
+    cardListDiv.appendChild(flashcardsBtn);
+    flashcardsBtn.addEventListener('click', createFlashcards)
+}
+
+function createFlashcards() {
+    // contentDiv.innerHTML = '';
+    // cardArray.forEach((card, index) => {
+    //     // Create li item
+    //     const flashcardDiv = document.createElement("div");
+    //     let cardWord = getDictEntry(card);
+    //     div.innerText = cardWord;
+    //     // Create a delete button
+    //     const button = document.createElement("button");
+    //     button.classList.add('search-button');
+    //     button.addEventListener("click", () => removeCard(index));
+    //     button.innerText = "remove";
+
+    //     // Append item to page
+    //     li.append(button);
+    //     cardListDiv.appendChild(li);
+    // });
 }
 
 function launchMyWords() {

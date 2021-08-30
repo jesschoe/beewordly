@@ -45,8 +45,8 @@ Here is the wireframe for the mobile layout of the app:
 
 |  Day | Deliverable | Status
 |---|---| ---|
-|August 27-29| Prompt / Wireframes / Priority Matrix / Timeframes | Incomplete
-|August 30| Project Approval / Set up HTML, CSS Structure / Pseudocode JS | Incomplete
+|August 27-29| Prompt / Wireframes / Priority Matrix / Timeframes | Complete
+|August 30| Project Approval / Set up HTML, CSS Structure / Pseudocode JS | Complete
 |August 31| Code axios calls & search functions | Incomplete
 |September 1| Code game / CSS | Incomplete
 |September 2| Finish CSS / Start Post MVPs  | Incomplete
@@ -62,12 +62,12 @@ Here is the wireframe for the mobile layout of the app:
 
 | Component | Priority | Estimated Time | Time Invested | Actual Time |
 | --- | :---: |  :---: | :---: | :---: |
-| Structure HTML/CSS | H | 2hrs|  |  |
-| Set up axios calls | H | 2hrs|  |  |
-| Parse API data for words | H | 2hrs|  |  |
-| Parse API data for audio | H | 3hrs|  |  |
-| Create dictionary search function | H | 3hrs|  |  |
-| Create Thesaurus search function | H | 3hrs|  |  |
+| Structure HTML/CSS | H | 2hrs| 1hr |  |
+| Set up axios calls | H | 2hrs| 1hr |  |
+| Parse API data for words | H | 2hrs| 2hrs |  |
+| Parse API data for audio | H | 3hrs| 2hrs |  |
+| Create dictionary search function | H | 3hrs| 2hrs |  |
+| Create Thesaurus search function | H | 3hrs| 1hr |  |
 | Create 'Word of the Day' function | H | 2hrs|  |  |
 | Create flashcard function | H | 2hrs|  |  |
 | Create spelling game | H | 3hrs|  |  |
