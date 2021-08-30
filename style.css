@@ -4,7 +4,8 @@
 }
 
 header {
-    background-color: #F1EF9E;
+    background-color: #F1EF9E; 
+    
 }
 
 body {
@@ -21,17 +22,10 @@ h1 {
 nav {
     background-color: lightgray;
     display: flex;
+    flex-flow: row wrap;
     justify-content: center;
     padding: 10px;
     
-}
-
-.game-nav {
-    background-color: lightgray;
-    display: flex;
-    justify-content: center;
-    padding: 10px;
-    margin: -10px;
 }
 
 div {
@@ -71,14 +65,17 @@ button:hover {
     text-shadow: 5px 5px 5px #F1EF9E;
   }
 
-.game-buttons {
-    width: 400px;
-    font-size: 1.5em;
+input {
+   
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align: left;
+    padding: 8px;
 }
 
 .search-button {
-    height: 50px;
-    
+    height: 30px;
+    font-size: 1em;
+    width: 100px;
 }
 
 .content-container {

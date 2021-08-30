@@ -12,26 +12,25 @@
         </style>
     <title>bee.wordly</title>
 </head>
-<body>
+<body onload="launchWotd()">
     <header>
         <h1>bee.wordly</h1>
-        <img src="./images/bee.svg" />
+        <img src='./images/bee.svg' />
     </header>
     <nav>
-        <button id="learn-words">learn<br/>words</button>
-        <button id="flashcards">flash<br/>cards</button>
-        <button id="my-words">my<br/>words</button>
+        <button id='learn-words'>learn<br/>words</button>
+        <button id='flashcards'>flash<br/>cards</button>
+        <button id='my-words'>my<br/>words</button>
+        <button id="spelling-bee">spelling<br/>bee</button>
     </nav>
-    <div class="game-nav">
-        <button class="game-buttons" id="spelling-bee">SPELLING BEE</button>
-    </div>
-    
-    <div class="content-container">
+    <div class='content-container'>
         <div id='content-name'>
+            <h2>Word of the Day</h2>
         </div>
         <div id='search-dictionary'>
         </div>
-        <div id="content"></div>
+        <div id='content'></div>
+         
         </div>
     </div>
     <!-- <script>
