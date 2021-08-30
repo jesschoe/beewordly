@@ -24,37 +24,40 @@ async function getDictEntry(word) {
     try{
         // get data for word from dictionary API
         let res = await axios.get(`${dictBaseURL}${word}${dictKey}`);
-        let definition = res.data[0].shortdef[0];
-        let pos = res.data[0].fl;
-        let audio = res.data[0].hwi.prs[0].sound;
-        let audioName = audio.audio;
-
-        let firstChar = audioName[0].charAt(0);
-
-      //do your stuff
-
-        // get data for correct format of audio URL of word
-        if (audioName.substring(0,2) === 'gg') {
-            audioSub = 'gg';
-        } else if (audioName.substring(0,3) === 'bix') {
-            audioSub = 'bix';
-        } else if (firstChar <='9' && firstChar >='0') {
-            audioSub = 'number';
+        console.log(res)
+        if (typeof res.data[0] === 'string') {
+            append(`did you mean`,res.data[0])
         } else {
-            audioSub = audioName[0];
-        }
+            let definition = res.data[0].shortdef[0];
+            let pos = res.data[0].fl;
+            let audio = res.data[0].hwi.prs[0].sound;
+            let audioName = audio.audio;
 
-        audioURL = `${audioBaseURL}${audioSub}/${audioName}.mp3`;
-        
-        append('part of speech', pos);
-        append('definition', definition);
+            let firstChar = audioName[0].charAt(0);
 
-        
+            // get data for correct format of audio URL of word
+            if (audioName.substring(0,2) === 'gg') {
+                audioSub = 'gg';
+            } else if (audioName.substring(0,3) === 'bix') {
+                audioSub = 'bix';
+            } else if (firstChar <='9' && firstChar >='0') {
+                audioSub = 'number';
+            } else {
+                audioSub = audioName[0];
+            }
 
-        return {
-            definition,
-            pos,
-            audioURL,
+            audioURL = `${audioBaseURL}${audioSub}/${audioName}.mp3`;
+            
+            append('part of speech', pos);
+            append('definition', definition);
+
+            
+
+            return {
+                definition,
+                pos,
+                audioURL,
+            }
         }
     } catch (error) {
         console.log(error);
@@ -99,28 +102,30 @@ async function getDictEntry(word) {
 const content = document.querySelector('#content');
 
 function append(keyword, data) {
+    contentDiv.innerHTML = '';
     let newContent = document.createElement('p');
     newContent.innerText = `${keyword}: ${data}`;
     contentDiv.appendChild(newContent);
 }
 
-getDictEntry('affable');
+// getDictEntry('affable');
 // getThesEntry('affable');
 // getRandomWord();
 
  // Button handlers
 
-const searchInput = document.createElement('input')
+const searchInput = document.createElement('input');
+const searchDiv = document.querySelector('#search-dictionary');
 function launchLearnWords(event) {
     
     contentName.innerHTML = '<h2>Learn Words</h2>';
-    contentDiv.innerHTML = '<p>Search for words to learn their part of speech, meaning, and synonyms</p>'
+    searchDiv.innerHTML = '<p>Search for words to learn their part of speech, meaning, and synonyms</p>'
 
     // searchInput = document.createElement('input');
     let searchBtn = document.createElement('button');
     searchBtn.classList.add('search-button');
-    contentDiv.appendChild(searchInput);
-    contentDiv.append(searchBtn);
+    searchDiv.append(searchInput);
+    searchDiv.append(searchBtn);
 
     searchBtn.addEventListener('click', searchDict);
     
@@ -131,6 +136,7 @@ function searchDict(event) {
     event.preventDefault;
     const inputValue = searchInput.value;
     getDictEntry(inputValue);
+    searchInput.value = '';
 }
 
 function playAudio(){

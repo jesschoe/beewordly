@@ -85,46 +85,6 @@ Here is the wireframe for the mobile layout of the app:
 
 ## Code Snippet
 
-Below is the async function for getting data from the dictionary API. Figuring out the format of the audio URL for the word pronunciations was tricky, but this works!
-
-```
-const dictBaseURL = 'https://www.dictionaryapi.com/api/v3/references/collegiate/json/';
-const dictKey = '?key=9aed0fc9-9efb-4167-83b0-c665d40f56b7';
-const audioBaseURL = 'https://media.merriam-webster.com/audio/prons/en/us/mp3/';
-
-async function getDictEntry(word) {
-    try{
-        // get data for word from dictionary API
-        let res = await axios.get(`${dictBaseURL}${word}${dictKey}`);
-        let definition = res.data[0].shortdef[0];
-        let pos = res.data[0].fl;
-        let audio = res.data[0].hwi.prs[0].sound;
-        let audioName = audio.audio;
-        let audioSub = '';
-
-        // get data for correct format of audio URL of word
-        if (audioName.substring(0,2) === 'g') {
-            audioSub = 'gg';
-        } else if (audioName.substring(0,3) === 'bix') {
-            audioSub = 'bix';
-        } else if (firstChar <='9' && firstChar >='0') {
-            audioSub = 'number';
-        } else {
-            audioSub = audioName[0];
-        }
-
-        let audioURL = `${audioBaseURL}${audioSub}/${audioName}.mp3`;
-        
-        return {
-            definition,
-            pos,
-            audioURL,
-        }
-    } catch (error) {
-        console.log(error);
-    }
- }
-```
 
 ## Change Log
   

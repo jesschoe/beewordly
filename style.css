@@ -68,6 +68,7 @@ button {
 
 button:hover {
     box-shadow: none;
+    text-shadow: 5px 5px 5px #F1EF9E;
   }
 
 .game-buttons {
