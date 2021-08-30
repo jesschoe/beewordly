@@ -16,7 +16,7 @@ const spellingBeeBtn = document.querySelector('#spelling-bee');
 console.log(document.body);
 
 learnWordsBtn.addEventListener('click', launchLearnWords);
-flashcardsBtn.addEventListener('click', playAudio);
+flashcardsBtn.addEventListener('click', launchFlashcards);
 myWordsBtn.addEventListener('click', launchMyWords);
 spellingBeeBtn.addEventListener('click', launchSpellingBee);
 
@@ -145,7 +145,16 @@ function playAudio(){
 }
 
 function launchFlashcards() {
+    // contentName.innerHTML = '<h2>Flashcards</h2>';
+    // searchDiv.innerHTML = '<p>Flip the flashcard to see the meaning</p>'
 
+    // // searchInput = document.createElement('input');
+    // let cardBtn = document.createElement('button');
+    // cardBtn.classList.add('card-button');
+    // searchDiv.append(searchInput);
+    // searchDiv.append(searchBtn);
+
+    // searchBtn.addEventListener('click', searchDict);
 }
 
 function launchMyWords() {

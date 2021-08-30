@@ -28,17 +28,15 @@ https://random-words-api.vercel.app/word
 Here is the wireframe for the mobile layout of the app:
 ![Wireframe](./images/p1wireframe.png)
 #### MVP 
-
 - Pull data from dictionary, thesaurus and random word API 
 - Parse API data
 - Create random word of the day 
 - Create search function to look up words
 - Create search function to look up synonyms
-- Create spelling bee game
 - Responsive design
 
 #### PostMVP  
-
+- Create spelling bee game
 - Add second word game using thesaurus API
 - Use local storage to save studied words
 - Create more dynamic game features (keep score, animations)
@@ -81,7 +79,7 @@ Here is the wireframe for the mobile layout of the app:
 | Continue styling games | L | 2hrs|  |  |
 | Add additional game features | L | 3hrs|  |  |
 | Add local storage function | L | 2hrs|  |  |
-| Total (MVP) | H | 32hrs|  |  |
+| Total (MVP) | H | 29hrs|  |  |
 
 ## Code Snippet
 
