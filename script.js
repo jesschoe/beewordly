@@ -1,12 +1,13 @@
+// Declare API URLs
 const dictBaseURL = 'https://www.dictionaryapi.com/api/v3/references/collegiate/json/';
 const dictKey = '?key=9aed0fc9-9efb-4167-83b0-c665d40f56b7';
 const audioBaseURL = 'https://media.merriam-webster.com/audio/prons/en/us/mp3/'
 let audioURL = '';
 const thesBaseURL = 'https://www.dictionaryapi.com/api/v3/references/thesaurus/json/';
 const thesKey = '?key=55b8d793-ca1e-4767-9965-51dff650f096'
-
 const randomWordURL = 'https://random-words-api.vercel.app/word';
 
+// Declare DOM elements
 const contentDiv = document.querySelector('#content');
 const contentName = document.querySelector('#content-name');
 const learnWordsBtn = document.querySelector('#learn-words');
@@ -15,32 +16,25 @@ const myWordsBtn = document.querySelector('#my-words');
 const spellingBeeBtn = document.querySelector('#spelling-bee');
 console.log(document.body);
 
-let wordObject = {
-    // def: '',
-    // pos: '',
-    // syns: [],
-    // audioURL: '',
-};
-
+// Event Listeners for nav buttons
 learnWordsBtn.addEventListener('click', launchLearnWords);
 flashcardsBtn.addEventListener('click', launchFlashcards);
 myWordsBtn.addEventListener('click', launchMyWords);
 spellingBeeBtn.addEventListener('click', launchSpellingBee);
 
+// Returns word object that contains a word's definition, part of speech, audio URL, and synonyms
 async function getDictEntry(word) {
     try{
         // get data for word from dictionary API
         let res = await axios.get(`${dictBaseURL}${word}${dictKey}`);
         // console.log(res)
+        // If there is no dictionary entry for the word, return suggestion
         if (typeof res.data[0] === 'string') {
             const suggestions = res.data[0];
-            
             return suggestions;
         } else {
-            
             let audio = res.data[0].hwi.prs[0].sound;
             let audioName = audio.audio;
-
             let firstChar = audioName[0].charAt(0);
 
             // get data for correct format of audio URL of word
@@ -67,11 +61,8 @@ async function getDictEntry(word) {
                 audioURL: `${audioBaseURL}${audioSub}/${audioName}.mp3`,
                 syns: await getThesEntry(word),
             };
-
             return wordObject;
-            
         }
-       
     } catch (error) {
         console.log(error);
     }
@@ -82,125 +73,131 @@ async function getThesEntry(word) {
     try{
         // get data for word from dictionary API
         let res = await axios.get(`${thesBaseURL}${word}${thesKey}`);
-        console.log(res)
+     
         if (typeof res.data[0] === 'string') {
             return res.data[0];
         } else {
             let synonyms = res.data[0].meta.syns[0];
             return synonyms;
         }   
-        
     } catch (error) {
         console.log(error);
     }
 }
 
-
-
+// Appends word of the day to page on load/refresh
 async function getWotd() {
     let wotd = await getRandomWord();
     contentName.innerHTML = `<h2>Word of the Day: ${wotd.word}<h2>`;
     appendData('definition', wotd.definition);
 }
- // get random word for word of the day function
+
+ // Get random word from random word generator API
 async function getRandomWord() {
     try{
-        // get data for word from dictionary API
         let res = await axios.get(`${randomWordURL}`);
         let randomWord = res.data[0];
-        
         return randomWord;
     } catch (error) {
         console.log(error);
     }
 }
 
- // Append data to DOM by keyword and content
-const content = document.querySelector('#content');
-
+// Append data to page by keyword and content
 function appendData(keyword, data) {
-    
     let newContent = document.createElement('p');
     newContent.innerText = `${keyword}: ${data}`;
     contentDiv.appendChild(newContent);
 }
 
- // Button handlers
-
-const searchInput = document.createElement('input');
 const searchDiv = document.querySelector('#search-dictionary');
 
+
+// Search function to look up words from input
 function launchLearnWords(event) {
     contentDiv.innerHTML = '';
     contentName.innerHTML = '<h2>Learn Words</h2>';
     searchDiv.innerHTML = '<p>Search for words to learn their part of speech, meaning, and synonyms</p>'
-
-    // searchInput = document.createElement('input');
-    let searchBtn = document.createElement('button');
-    searchBtn.classList.add('search-button');
-    searchBtn.innerText = 'search';
-    searchInput.placeholder = 'enter a word';
     
-    searchDiv.append(searchInput);
-    searchDiv.append(searchBtn);
+    const searchForm = document.createElement('form');
+    const searchLabel = document.createElement('label');
+    searchLabel.for = 'word';
 
-    searchBtn.addEventListener('click', searchDict);
-    // searchInput.addEventListener('keypress', function onEvent(e) {
-    //     e.preventDefault();
-    //     if (e.key === 'Enter') {
-    //         searchBtn.click();
-    //     } else {
-    //        return `${e.key}`;
-    //     }
-    // })
+    const searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.name = 'word';
+    searchInput.id = 'word';
     
-}
+    const searchSubmit = document.createElement('input');
+    searchSubmit.type = 'submit';
+    searchSubmit.value = 'Submit';
 
-// search dictionary upon input value
-function searchDict(event) {
-    // referenced the following stackoverflow on how to return values from async functions:
-    // https://stackoverflow.com/questions/49938266/how-to-return-values-from-async-functions-using-async-await-from-function
-    (async () => {
-        event.preventDefault;
-        contentDiv.innerHTML = '';
-        const inputValue = searchInput.value;
-        
-        let wordObj = await getDictEntry(inputValue);
-        searchInput.value = '';
-        
-        if (typeof wordObj === 'string') {
-            appendData(`did you mean`, wordObj)
-        } else {
-            appendData('part of speech', wordObj.pos);
-            appendData('definition', wordObj.def);
+    searchDiv.append(searchForm);
+    searchForm.append(searchLabel);
+    searchForm.append(searchInput);
+    searchForm.append(searchSubmit);
+    searchForm.addEventListener('submit', searchDict);  
 
-            let synsStr = (wordObj.syns).join(', ');
-            appendData('synonyms', synsStr)
-        }
-    })()
-}
-
-function playAudio(){
-    let audio = new Audio(audioURL);       // seek to the start
-    audio.play();                // play it till it ends
+    // Find dictionary entry for input and append data to page
+    function searchDict(event) {
+        event.preventDefault();
+        (async () => {
+            event.preventDefault;
+            contentDiv.innerHTML = '';
+            const inputValue = searchInput.value;
+            let wordObj = await getDictEntry(inputValue);
+            searchInput.value = '';
+            
+            if (typeof wordObj === 'string') {
+                appendData(`did you mean`, wordObj)
+            } else {
+                appendData('part of speech', wordObj.pos);
+                appendData('definition', wordObj.def);
+    
+                let synsStr = (wordObj.syns).join(', ');
+                appendData('synonyms', synsStr)
+            }
+        })()
+    }
 }
 
 const cardArray = [];
+
+// Allows user to input words and creates a set of flashcards that toggles between showing/hiding definition
 function launchFlashcards() {
     contentDiv.innerHTML = '';
     contentName.innerHTML = '<h2>Flashcards</h2>';
     searchDiv.innerHTML = '<p>enter up to 10 words to create your deck of flashcards</p>'
-    const textInput = document.createElement('input');
-    const addBtn = document.createElement('button');
-    addBtn.classList.add('search-button');
-    addBtn.innerText = 'add';
-    textInput.placeholder = 'enter a word';
-    searchDiv.append(textInput);
-    searchDiv.append(addBtn);
+    // const textInput = document.createElement('input');
+    // const addBtn = document.createElement('button');
+    // addBtn.classList.add('search-button');
+    // addBtn.innerText = 'add';
+    // textInput.placeholder = 'enter a word';
+    // searchDiv.append(textInput);
+    // searchDiv.append(addBtn);
 
-    addBtn.addEventListener('click', addWords);
+    // addBtn.addEventListener('click', addWords);
+    const searchForm = document.createElement('form');
+    const searchLabel = document.createElement('label');
+    searchLabel.for = 'word';
+
+    const searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.name = 'word';
+    searchInput.id = 'word';
+    
+    const searchSubmit = document.createElement('input');
+    searchSubmit.type = 'submit';
+    searchSubmit.value = 'Submit';
+
+    searchDiv.append(searchForm);
+    searchForm.append(searchLabel);
+    searchForm.append(searchInput);
+    searchForm.append(searchSubmit);
+    searchForm.addEventListener('submit', addWords);  
 }
 
+// Adds words to the flashcards array
 function addWords(event) {
     event.preventDefault();
     const textInput = document.querySelector('input');
@@ -213,8 +210,7 @@ function addWords(event) {
     }
 }
 
-
-
+// Append words to list of flashcards to create
 function appendCardList() {
     const cardListDiv = document.querySelector('ol');
     cardListDiv.innerHTML = '';
@@ -245,6 +241,7 @@ function appendCardList() {
     flashcardsBtn.addEventListener('click', createFlashcards)
 }
 
+// Populate flashcards on the page for each word on the list
 async function createFlashcards() {
     contentDiv.innerHTML = '';
     let cardDiv = document.createElement('div');
@@ -253,7 +250,7 @@ async function createFlashcards() {
     searchDiv.innerHTML = '<p>click to see definition</p>';
     document.querySelector('ol').innerHTML = '';
     
-    cardArray.forEach((card, index) => {
+    cardArray.forEach((card) => {
         (async () => {
             let cardData = await getDictEntry(card);
             const cardWord = document.createElement("div");
@@ -275,8 +272,7 @@ async function createFlashcards() {
                     cardDef.style.display = 'none';
                 }
             })
-    })()
-        
+        })()  
     });
 }
 
@@ -284,9 +280,10 @@ function launchMyWords() {
 
 }
 
+// Launch spelling game that plays audio for random words and check to see if user spelled it correctly
 function launchSpellingBee() {
     contentDiv.innerHTML = '';
-    contentName.innerHTML = '<h2>Spelling Bee</h2>';
+    contentName.innerHTML = '<h2>Spelling Bee!</h2>';
     searchDiv.innerHTML = "<p>Press 'question' when you're ready.. the word will only play once!</p>";
     
     const playBtn = document.createElement('button');
@@ -295,18 +292,13 @@ function launchSpellingBee() {
 
     const audioDiv = document.createElement('audio');
 
-    
-    
-    
-
     contentDiv.append(playBtn);
     contentDiv.append(audioDiv);
-  
-
     playBtn.addEventListener('click', playAudio())
     // spellingBtn.addEventListener('click', submitAnswer)
 }
 
+// Append audio URL for random word and play upon button click
 async function playAudio() {
     let audioData = document.querySelector("audio");
     let randomArray = [];
@@ -329,15 +321,20 @@ async function playAudio() {
                 const spellingBtn = document.createElement('button');
                 spellingBtn.innerText = 'submit';
                 spellingBtn.setAttribute('class', 'search-button');
+
                 contentDiv.append(spellingInput);
                 contentDiv.append(spellingBtn);
 
                 spellingBtn.addEventListener('click', function() {
-                    console.log(spellingInput.value, randomArray[i].toLowerCase(), 'hello')
                     if (spellingInput.value == randomArray[i].toLowerCase()) {
-                        searchDiv.innerHTML = "<p>Wow, how'd you get that right?!</p>";
+                        searchDiv.innerHTML = `<p>Wow, you got it!</p>
+                            <p>${randomArray[i].toLowerCase()}: ${dictionaryWord.def}.</p>
+                            <p>Play again</p>`;
                     } else {
-                        searchDiv.innerHTML = "<p>You're a terrible speller, try again?</p>";
+                        searchDiv.innerHTML = `
+                            <p>You're a terrible speller.</p>
+                            <p>The answer is: ${randomArray[i].toLowerCase()}, ${dictionaryWord.def}.</p>
+                            <p>Try again?</p>`;
                     }
 
                     spellingInput.remove();
@@ -345,17 +342,10 @@ async function playAudio() {
                     spellingBtn.innerText = 'question';
                     
                     spellingBtn.addEventListener('click', launchSpellingBee);
-
-
                 })
-
-
                 break;
             }
         }
-        
     })()
-    // let playBtn = document.querySelector('#play-button');
-    // playBtn.addEventListener('click', playAudio())
 }
 

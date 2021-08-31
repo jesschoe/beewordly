@@ -47,9 +47,9 @@ Here is the wireframe for the mobile layout of the app:
 |---|---| ---|
 |August 27-29| Prompt / Wireframes / Priority Matrix / Timeframes | Complete
 |August 30| Project Approval / Set up HTML, CSS Structure / Pseudocode JS | Complete
-|August 31| Code axios calls & search functions | Incomplete
-|September 1| Code game / CSS | Incomplete
-|September 2| Finish CSS / Start Post MVPs  | Incomplete
+|August 31| Code axios calls, functions, game | Complete
+|September 1| CSS styling, start post MVPs | Incomplete
+|September 2| Post MVPs  | Incomplete
 |September 3| Presentation | Incomplete
 
 
@@ -70,7 +70,7 @@ Here is the wireframe for the mobile layout of the app:
 | Create Thesaurus search function | H | 3hrs| 1hr | 1hr |
 | Create 'Word of the Day' function | H | 2hrs| 2hrs | 2hrs |
 | Create flashcard function | H | 2hrs| 3hrs | 3hrs |
-| Create spelling game | H | 3hrs|  |  |
+| Create spelling game | H | 3hrs| 2hrs | 2hrs |
 | Style spelling game | M | 3hrs|  |  |
 | Style 'Word of the Day' card | M | 2hrs|  |  |
 | Style flashcards | M | 2hrs |  |  |
