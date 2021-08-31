@@ -31,7 +31,7 @@ async function getDictEntry(word) {
     try{
         // get data for word from dictionary API
         let res = await axios.get(`${dictBaseURL}${word}${dictKey}`);
-        console.log(res)
+        // console.log(res)
         if (typeof res.data[0] === 'string') {
             const suggestions = res.data[0];
             
@@ -77,22 +77,25 @@ async function getDictEntry(word) {
     }
 }
 
-console.log(getDictEntry('you'))
 // Get thesaurus entry for word and return array of synonyms
 async function getThesEntry(word) {
     try{
         // get data for word from dictionary API
         let res = await axios.get(`${thesBaseURL}${word}${thesKey}`);
-        let synonyms = res.data[0].meta.syns[0];
-        
-        
-        return synonyms;
-        
+        console.log(res)
+        if (typeof res.data[0] === 'string') {
+            return res.data[0];
+        } else {
+            let synonyms = res.data[0].meta.syns[0];
+            return synonyms;
+        }   
         
     } catch (error) {
         console.log(error);
     }
 }
+
+
 
 async function getWotd() {
     let wotd = await getRandomWord();
@@ -284,25 +287,75 @@ function launchMyWords() {
 function launchSpellingBee() {
     contentDiv.innerHTML = '';
     contentName.innerHTML = '<h2>Spelling Bee</h2>';
-    searchDiv.innerHTML = '<p>press play to hear the word and type in your guess!</p>'
+    searchDiv.innerHTML = "<p>Press 'question' when you're ready.. the word will only play once!</p>";
+    
     const playBtn = document.createElement('button');
-    playBtn.addEventListener('click', playAudio())
-    contentDiv.append(playBtn);
+    playBtn.setAttribute('id', 'play-button')
+    playBtn.innerText = 'question'
 
+    const audioDiv = document.createElement('audio');
+
+    
+    
+    
+
+    contentDiv.append(playBtn);
+    contentDiv.append(audioDiv);
+  
+
+    playBtn.addEventListener('click', playAudio())
+    // spellingBtn.addEventListener('click', submitAnswer)
 }
 
 async function playAudio() {
-        let audio = document.createElement("audio");
+    let audioData = document.querySelector("audio");
+    let randomArray = [];
+    for (let i = 0; i < 20; i++) {
         let randomWord = await getRandomWord();
-        let dictionaryWord = await getDictEntry(randomWord.word);
-       
-        if (typeof dictionaryWord === 'string') {
-            while (typeof dictionaryWord === 'string') {
-                randomWord = await getRandomWord();
-                dictionaryWord = await getDictEntry(randomWord.word);
+        randomArray[i] = randomWord.word;
+    }
+
+    (async () => {
+        for (let i = 0; i < 20; i++) {
+            let dictionaryWord = await getDictEntry(randomArray[i]);
+    
+            if (typeof dictionaryWord === 'object') {
+                audioData.src = dictionaryWord.audioURL;
+                audioData.play();
+                const question = document.querySelector('#play-button');
+                question.remove();
+                const spellingInput = document.createElement('input');
+                spellingInput.placeholder = 'enter spelling';
+                const spellingBtn = document.createElement('button');
+                spellingBtn.innerText = 'submit';
+                spellingBtn.setAttribute('class', 'search-button');
+                contentDiv.append(spellingInput);
+                contentDiv.append(spellingBtn);
+
+                spellingBtn.addEventListener('click', function() {
+                    console.log(spellingInput.value, randomArray[i].toLowerCase(), 'hello')
+                    if (spellingInput.value == randomArray[i].toLowerCase()) {
+                        searchDiv.innerHTML = "<p>Wow, how'd you get that right?!</p>";
+                    } else {
+                        searchDiv.innerHTML = "<p>You're a terrible speller, try again?</p>";
+                    }
+
+                    spellingInput.remove();
+                    spellingBtn.removeAttribute('class', 'search-button');
+                    spellingBtn.innerText = 'question';
+                    
+                    spellingBtn.addEventListener('click', launchSpellingBee);
+
+
+                })
+
+
+                break;
             }
         }
-        audio.src = `${dictionaryWord.audio}`;
-        audio.play();
+        
+    })()
+    // let playBtn = document.querySelector('#play-button');
+    // playBtn.addEventListener('click', playAudio())
 }
 
