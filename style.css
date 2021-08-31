@@ -38,6 +38,8 @@ h1 {
 
 p {
     font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: 1.2em;
+    
 }
 
 img {
@@ -98,4 +100,29 @@ ol {
     margin: 30px auto;
     padding: 10px;
    
+}
+
+.card-div {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+}
+
+.card-word {
+    width: 40%;
+    min-width: 200px;
+    height: 300px;
+    border: 1px solid black;
+    font-size: 1.3em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    margin: 10px;
+    
+}
+.card-def {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: .8em;
+    padding: 10px;
+
 }

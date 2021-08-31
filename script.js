@@ -31,7 +31,7 @@ async function getDictEntry(word) {
     try{
         // get data for word from dictionary API
         let res = await axios.get(`${dictBaseURL}${word}${dictKey}`);
-
+        console.log(res)
         if (typeof res.data[0] === 'string') {
             appendData(`did you mean`,res.data[0])
         } else {
@@ -52,6 +52,12 @@ async function getDictEntry(word) {
                 audioSub = audioName[0];
             }
 
+            // let wordDef = res.data[0].shortdef[0];
+            // for (let i = 0; i < wordDef.length; i++) {
+            //     if (wordDef[i] === '-') {
+            //         let shortDef = wordDef.substring(i,10)
+            //     }
+            // }
             
             const wordObject = {
                 def: res.data[0].shortdef[0],
@@ -67,10 +73,11 @@ async function getDictEntry(word) {
     } catch (error) {
         console.log(error);
     }
- }
+}
 
- // Get thesaurus entry for word and return array of synonyms
- async function getThesEntry(word) {
+console.log(getDictEntry('you'))
+// Get thesaurus entry for word and return array of synonyms
+async function getThesEntry(word) {
     try{
         // get data for word from dictionary API
         let res = await axios.get(`${thesBaseURL}${word}${thesKey}`);
@@ -83,13 +90,13 @@ async function getDictEntry(word) {
     } catch (error) {
         console.log(error);
     }
- }
+}
 
- function getWotd() {
+function getWotd() {
     getRandomWord();
- }
+}
  // get random word for word of the day function
- async function getRandomWord() {
+async function getRandomWord() {
     try{
         // get data for word from dictionary API
         let res = await axios.get(`${randomWordURL}`);
@@ -103,7 +110,7 @@ async function getDictEntry(word) {
     } catch (error) {
         console.log(error);
     }
- }
+}
 
  // Append data to DOM by keyword and content
 const content = document.querySelector('#content');
@@ -130,15 +137,26 @@ function launchLearnWords(event) {
     searchBtn.classList.add('search-button');
     searchBtn.innerText = 'search';
     searchInput.placeholder = 'enter a word';
+    
     searchDiv.append(searchInput);
     searchDiv.append(searchBtn);
 
     searchBtn.addEventListener('click', searchDict);
+    // searchInput.addEventListener('keypress', function onEvent(e) {
+    //     e.preventDefault();
+    //     if (e.key === 'Enter') {
+    //         searchBtn.click();
+    //     } else {
+    //        return `${e.key}`;
+    //     }
+    // })
     
 }
 
 // search dictionary upon input value
 function searchDict(event) {
+    // referenced the following stackoverflow on how to return values from async functions:
+    // https://stackoverflow.com/questions/49938266/how-to-return-values-from-async-functions-using-async-await-from-function
     (async () => {
         event.preventDefault;
         contentDiv.innerHTML = '';
@@ -198,6 +216,11 @@ function appendCardList() {
         const li = document.createElement("li");
         li.innerText = card;
         // Create a delete button
+        function removeCard(i) {
+            cardArray.splice(i, 1);
+            appendCardList();
+        }
+
         const button = document.createElement("button");
         button.classList.add('search-button');
         button.addEventListener("click", () => removeCard(index));
@@ -215,23 +238,39 @@ function appendCardList() {
     flashcardsBtn.addEventListener('click', createFlashcards)
 }
 
-function createFlashcards() {
-    // contentDiv.innerHTML = '';
-    // cardArray.forEach((card, index) => {
-    //     // Create li item
-    //     const flashcardDiv = document.createElement("div");
-    //     let cardWord = getDictEntry(card);
-    //     div.innerText = cardWord;
-    //     // Create a delete button
-    //     const button = document.createElement("button");
-    //     button.classList.add('search-button');
-    //     button.addEventListener("click", () => removeCard(index));
-    //     button.innerText = "remove";
+async function createFlashcards() {
+    contentDiv.innerHTML = '';
+    let cardDiv = document.createElement('div');
+    cardDiv.classList.add('card-div');
+    contentDiv.appendChild(cardDiv);
+    searchDiv.innerHTML = '<p>click to see definition</p>';
+    document.querySelector('ol').innerHTML = '';
+    
+    cardArray.forEach((card, index) => {
+        (async () => {
+            let cardData = await getDictEntry(card);
+        const cardWord = document.createElement("div");
+        const cardDef = document.createElement("div")
+        cardWord.innerHTML = `<p>${card}</p>`;
+        cardWord.classList.add('card-word');
+        
+        cardDef.innerText = cardData.def;
+        cardDef.classList.add('card-def');
+        cardDef.style.display = 'none';
 
-    //     // Append item to page
-    //     li.append(button);
-    //     cardListDiv.appendChild(li);
-    // });
+        cardDiv.appendChild(cardWord);
+        cardWord.appendChild(cardDef);
+
+        cardWord.addEventListener('click', function() {
+            if (cardDef.style.display === 'none') {
+                cardDef.style.display = 'block';
+            } else {
+                cardDef.style.display = 'none';
+            }
+        })
+    })()
+        
+    });
 }
 
 function launchMyWords() {
@@ -239,15 +278,17 @@ function launchMyWords() {
 }
 
 function launchSpellingBee() {
+    contentDiv.innerHTML = '';
+    contentName.innerHTML = '<h2>Spelling Bee</h2>';
+    searchDiv.innerHTML = '<p>press play to hear the word and type in your guess!</p>'
+    const playBtn = document.createElement('button');
+    playBtn.addEventListener('click', playAudio(wordAudio))
 
 }
 
+function playAudio() {
+        let audio = document.getElementById("audio");
+        audio.src = getDictionary('pleasant');
+        audio.play();
+}
 
-// const button = document.querySelector('#pronounce');
-// button.addEventListener('click', playAudio(wordAudio))
-
-// function play() {
-//     var audio = document.getElementById("audio");
-//     audio.src = getDictionary('pleasant');
-//     audio.play();
-//   }
