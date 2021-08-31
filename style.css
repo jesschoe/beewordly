@@ -53,13 +53,13 @@ footer {
 }
 
 button {
-    height: 100px;
-    width: 120px;
+    height: 70px;
+    width: 100px;
     border: none;
     margin: 10px;
     border-radius: 10px;
     box-shadow: 3px 3px 10px gray;
-    font-size: 1.2em;
+    font-size: 1em;
 }
 
 button:hover {

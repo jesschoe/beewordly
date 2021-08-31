@@ -33,7 +33,9 @@ async function getDictEntry(word) {
         let res = await axios.get(`${dictBaseURL}${word}${dictKey}`);
         console.log(res)
         if (typeof res.data[0] === 'string') {
-            appendData(`did you mean`,res.data[0])
+            const suggestions = res.data[0];
+            
+            return suggestions;
         } else {
             
             let audio = res.data[0].hwi.prs[0].sound;
@@ -92,21 +94,19 @@ async function getThesEntry(word) {
     }
 }
 
-function getWotd() {
-    getRandomWord();
+async function getWotd() {
+    let wotd = await getRandomWord();
+    contentName.innerHTML = `<h2>Word of the Day: ${wotd.word}<h2>`;
+    appendData('definition', wotd.definition);
 }
  // get random word for word of the day function
 async function getRandomWord() {
     try{
         // get data for word from dictionary API
         let res = await axios.get(`${randomWordURL}`);
-        let wotd = res.data[0].word;
-        let wotdDef = res.data[0].definition;
+        let randomWord = res.data[0];
         
-        
-        contentName.innerHTML = `<h2>Word of the Day: ${wotd}<h2>`;
-        appendData('definition', wotdDef);
-
+        return randomWord;
     } catch (error) {
         console.log(error);
     }
@@ -165,11 +165,15 @@ function searchDict(event) {
         let wordObj = await getDictEntry(inputValue);
         searchInput.value = '';
         
-        appendData('part of speech', wordObj.pos);
-        appendData('definition', wordObj.def);
+        if (typeof wordObj === 'string') {
+            appendData(`did you mean`, wordObj)
+        } else {
+            appendData('part of speech', wordObj.pos);
+            appendData('definition', wordObj.def);
 
-        let synsStr = (wordObj.syns).join(', ');
-        appendData('synonyms', synsStr)
+            let synsStr = (wordObj.syns).join(', ');
+            appendData('synonyms', synsStr)
+        }
     })()
 }
 
@@ -249,25 +253,25 @@ async function createFlashcards() {
     cardArray.forEach((card, index) => {
         (async () => {
             let cardData = await getDictEntry(card);
-        const cardWord = document.createElement("div");
-        const cardDef = document.createElement("div")
-        cardWord.innerHTML = `<p>${card}</p>`;
-        cardWord.classList.add('card-word');
-        
-        cardDef.innerText = cardData.def;
-        cardDef.classList.add('card-def');
-        cardDef.style.display = 'none';
+            const cardWord = document.createElement("div");
+            const cardDef = document.createElement("div")
+            cardWord.innerHTML = `<p>${card}</p>`;
+            cardWord.classList.add('card-word');
+            
+            cardDef.innerText = cardData.def;
+            cardDef.classList.add('card-def');
+            cardDef.style.display = 'none';
 
-        cardDiv.appendChild(cardWord);
-        cardWord.appendChild(cardDef);
+            cardDiv.appendChild(cardWord);
+            cardWord.appendChild(cardDef);
 
-        cardWord.addEventListener('click', function() {
-            if (cardDef.style.display === 'none') {
-                cardDef.style.display = 'block';
-            } else {
-                cardDef.style.display = 'none';
-            }
-        })
+            cardWord.addEventListener('click', function() {
+                if (cardDef.style.display === 'none') {
+                    cardDef.style.display = 'block';
+                } else {
+                    cardDef.style.display = 'none';
+                }
+            })
     })()
         
     });
@@ -282,13 +286,23 @@ function launchSpellingBee() {
     contentName.innerHTML = '<h2>Spelling Bee</h2>';
     searchDiv.innerHTML = '<p>press play to hear the word and type in your guess!</p>'
     const playBtn = document.createElement('button');
-    playBtn.addEventListener('click', playAudio(wordAudio))
+    playBtn.addEventListener('click', playAudio())
+    contentDiv.append(playBtn);
 
 }
 
-function playAudio() {
-        let audio = document.getElementById("audio");
-        audio.src = getDictionary('pleasant');
+async function playAudio() {
+        let audio = document.createElement("audio");
+        let randomWord = await getRandomWord();
+        let dictionaryWord = await getDictEntry(randomWord.word);
+       
+        if (typeof dictionaryWord === 'string') {
+            while (typeof dictionaryWord === 'string') {
+                randomWord = await getRandomWord();
+                dictionaryWord = await getDictEntry(randomWord.word);
+            }
+        }
+        audio.src = `${dictionaryWord.audio}`;
         audio.play();
 }
 

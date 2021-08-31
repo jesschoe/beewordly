@@ -62,14 +62,14 @@ Here is the wireframe for the mobile layout of the app:
 
 | Component | Priority | Estimated Time | Time Invested | Actual Time |
 | --- | :---: |  :---: | :---: | :---: |
-| Structure HTML/CSS | H | 2hrs| 1hr |  |
-| Set up axios calls | H | 2hrs| 1hr |  |
-| Parse API data for words | H | 2hrs| 2hrs |  |
-| Parse API data for audio | H | 3hrs| 2hrs |  |
-| Create dictionary search function | H | 3hrs| 2hrs |  |
-| Create Thesaurus search function | H | 3hrs| 1hr |  |
-| Create 'Word of the Day' function | H | 2hrs|  |  |
-| Create flashcard function | H | 2hrs|  |  |
+| Structure HTML/CSS | H | 2hrs| 1hr | 1hr |
+| Set up axios calls | H | 2hrs| 1hr | 1hr |
+| Parse API data for words | H | 2hrs| 2hrs | 2hrs |
+| Parse API data for audio | H | 3hrs| 2hrs | 2hrs |
+| Create dictionary search function | H | 3hrs| 3hrs | 3hrs |
+| Create Thesaurus search function | H | 3hrs| 1hr | 1hr |
+| Create 'Word of the Day' function | H | 2hrs| 2hrs | 2hrs |
+| Create flashcard function | H | 2hrs| 3hrs | 3hrs |
 | Create spelling game | H | 3hrs|  |  |
 | Style spelling game | M | 3hrs|  |  |
 | Style 'Word of the Day' card | M | 2hrs|  |  |
