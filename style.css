@@ -1,31 +1,63 @@
 * {
-    font-family: 'Ribeye Marrow', cursive;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     text-align: center;
-}
-
-header {
-    background-color: #F1EF9E; 
-    
+    /* border: 1px solid black; */
 }
 
 body {
     display: flex;
     justify-content: center;
-    flex-flow: column;
+    flex-direction: column;
+    position: absolute;
     margin: 0;
+    min-height: 100vh;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
 }
 
-h1 {
-    font-size: 2.7em;
-}
-
-nav {
-    background-color: lightgray;
+header,
+footer {
+    background-color: #F9CB33  ; 
+    flex-grow: 0;
+    flex: none;
+    width: 100%;
+    height: auto;
     display: flex;
-    flex-flow: row wrap;
-    justify-content: center;
+    padding: 0 0 0 20px; 
+    align-items: center;
+    color: #581845; 
+}
+
+footer {
+    height: 50px;
+}
+
+nav ul {
+    font-size: 1.4em;
+    padding: 20px;
+}
+
+nav li {
+    display: inline;
     padding: 10px;
-    
+}
+
+main {
+    flex-grow: 1;
+    overflow: auto;
+    overflow-x: hidden;
+}
+
+h1,
+h2 {
+    font-family: 'Ribeye Marrow', cursive;
+    font-size: 2.3em;
+}
+
+h2 {
+    font-size: 1.8em;
 }
 
 div {
@@ -37,8 +69,7 @@ h1 {
 }
 
 p {
-    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-    font-size: 1.2em;
+
     
 }
 
@@ -47,24 +78,25 @@ img {
     transform: rotate(45deg);
 }
 
-footer {
-    background-color: #F1EF9E;
-    height: 200px;
-}
-
 button {
-    height: 70px;
-    width: 100px;
+    height: 50px;
+    width: 65px;
     border: none;
-    margin: 10px;
+    margin: 3px;
     border-radius: 10px;
-    box-shadow: 3px 3px 10px gray;
-    font-size: 1em;
+    box-shadow: 2px 2px 7px gray;
+    font-size: .8em;
+    font-family: 'Ribeye Marrow', cursive;
 }
 
-button:hover {
-    box-shadow: none;
-    text-shadow: 5px 5px 5px #F1EF9E;
+a {
+    text-decoration: none;
+    color: #581845;
+}
+
+a:hover {
+    color: white;
+    text-decoration: none;
   }
 
 input {
@@ -79,27 +111,36 @@ ol {
     list-style-position: inside;
 }
 
+/* footer {
+    background-color: #F1EF9E;
+    height: 50px;
+    flex-grow: 0;
+   
+} */
+
 .search-button {
-    height: 30px;
-    font-size: .8em;
-    width: 70px;
+    height: 20px;
+    font-size: .7em;
+    width: 60px;
     margin: 10px;
 }
 
 .create-button {
     height: 30px;
-    font-size: 1em;
-    width: 200px;
+    font-size: .8em;
+    width: 150px;
     margin-top: 40px;
 }
 
 .content-container {
     border: 2px solid lightgray;
     border-radius: 10px;
-    width: 60%;
+    width: 70%;
     margin: 30px auto;
     padding: 10px;
+    height: auto;
    
+  
 }
 
 .card-div {
@@ -113,16 +154,46 @@ ol {
     min-width: 200px;
     height: 300px;
     border: 1px solid black;
+    border-radius: 10px;
     font-size: 1.3em;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
     margin: 10px;
-    
 }
+
 .card-def {
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     font-size: .8em;
     padding: 10px;
+}
 
+.italic {
+    font-style: italic;
+}
+
+@media screen and (min-width: 812px) {
+    *{
+        font-size: 18px;
+    }
+
+
+    .content-container {
+        border: 2px solid lightgray;
+        border-radius: 10px;
+        width: 70%;
+        margin: 30px auto;
+        padding: 10px;
+        height: auto;
+        overflow: auto;
+    }
+
+
+    button {
+        margin: 20px 0;
+        font-size: 110%;
+        width: 100px;
+        height: 70px;
+        
+    }
 }

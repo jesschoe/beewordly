@@ -16,25 +16,32 @@
     <header>
         <h1>bee.wordly</h1>
         <img src='./images/bee.svg' />
+        <nav>
+            <ul>
+                <li><a href="#" onclick="launchLearnWords(); return false;">learn words</a></li>
+                <li><a href="#" onclick="launchFlashcards(); return false;">flashcards</a></li>
+                <li><a href="#" onclick="launchSpellingBee(); return false;">spelling bee</a></li>
+                <li><a href="#" onclick="launchMyWords(); return false;">my words</a></li>
+            </ul>
+        </nav> <!-- <button id='flashcards'>flash<br/>cards</button>
+            <button id='my-words'>my<br/>words</button>
+            <button id='spelling-bee'>spelling<br/>bee</button> -->
+        
     </header>
-    <nav>
-        <button id='learn-words'>learn<br/>words</button>
-        <button id='flashcards'>flash<br/>cards</button>
-        <button id='my-words'>my<br/>words</button>
-        <button id="spelling-bee">spelling<br/>bee</button>
-    </nav>
-    <div class='content-container'>
-        <div id='content-name'>
-            <h2 id='wotd-word'>Word of the Day</h2>
+    <main>
+        
+        <div class='content-container'>
+            <div id='content-name'>
+                <h2 id='wotd-word'>Word of the Day</h2>
+            </div>
+            <div id='search-dictionary'>
+            </div>
+            <div id='content'></div>
+            <ol>
+            </ol>
+            </div>
         </div>
-        <div id='search-dictionary'>
-        </div>
-        <div id='content'></div>
-        <ol>
-        </ol>
-        </div>
-    </div>
-   
+    </main>
     <footer>
        
     </footer>

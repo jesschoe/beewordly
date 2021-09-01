@@ -10,6 +10,7 @@ const randomWordURL = 'https://random-words-api.vercel.app/word';
 // Declare DOM elements
 const contentDiv = document.querySelector('#content');
 const contentName = document.querySelector('#content-name');
+const searchDiv = document.querySelector('#search-dictionary');
 const learnWordsBtn = document.querySelector('#learn-words');
 const flashcardsBtn = document.querySelector('#flashcards');
 const myWordsBtn = document.querySelector('#my-words');
@@ -17,7 +18,8 @@ const spellingBeeBtn = document.querySelector('#spelling-bee');
 console.log(document.body);
 
 // Event Listeners for nav buttons
-learnWordsBtn.addEventListener('click', launchLearnWords);
+// learnWordsBtn.addEventListener('click', launchLearnWords);
+// learnWordsBtn.onclick = launchLearnWords;
 flashcardsBtn.addEventListener('click', launchFlashcards);
 myWordsBtn.addEventListener('click', launchMyWords);
 spellingBeeBtn.addEventListener('click', launchSpellingBee);
@@ -88,8 +90,20 @@ async function getThesEntry(word) {
 // Appends word of the day to page on load/refresh
 async function getWotd() {
     let wotd = await getRandomWord();
-    contentName.innerHTML = `<h2>Word of the Day: ${wotd.word}<h2>`;
-    appendData('definition', wotd.definition);
+    contentName.innerHTML = `<h2>Word of the Day<h2>`;
+    let cardDiv = document.createElement('div');
+    cardDiv.classList.add('card-div');
+    cardDiv.setAttribute('id', 'wotd');
+    contentDiv.appendChild(cardDiv);
+    const cardWord = document.createElement("div");
+    const cardDef = document.createElement("div")
+    cardWord.innerHTML = `<p>${wotd.word}</p>`;
+    cardWord.classList.add('card-word');
+    cardDef.innerText = wotd.definition;
+    cardDef.classList.add('card-def');
+    cardDiv.appendChild(cardWord);
+    cardWord.appendChild(cardDef);
+   
 }
 
  // Get random word from random word generator API
@@ -110,14 +124,11 @@ function appendData(keyword, data) {
     contentDiv.appendChild(newContent);
 }
 
-const searchDiv = document.querySelector('#search-dictionary');
-
-
 // Search function to look up words from input
 function launchLearnWords(event) {
     contentDiv.innerHTML = '';
     contentName.innerHTML = '<h2>Learn Words</h2>';
-    searchDiv.innerHTML = '<p>Search for words to learn their part of speech, meaning, and synonyms</p>'
+    searchDiv.innerHTML = '<p>search for words to learn their part of speech, meaning, and synonyms</p>'
     
     const searchForm = document.createElement('form');
     const searchLabel = document.createElement('label');
@@ -284,28 +295,44 @@ function launchMyWords() {
 function launchSpellingBee() {
     contentDiv.innerHTML = '';
     contentName.innerHTML = '<h2>Spelling Bee!</h2>';
-    searchDiv.innerHTML = "<p>Press 'question' when you're ready.. the word will only play once!</p>";
-    
-    const playBtn = document.createElement('button');
-    playBtn.setAttribute('id', 'play-button')
-    playBtn.innerText = 'question'
+    searchDiv.innerHTML = "<p>Get ready.. the word will only play once!</p><p>Type your guess here:</p>";
 
     const audioDiv = document.createElement('audio');
+    searchDiv.append(audioDiv);
+    
 
-    contentDiv.append(playBtn);
-    contentDiv.append(audioDiv);
-    playBtn.addEventListener('click', playAudio())
-    // spellingBtn.addEventListener('click', submitAnswer)
+    const searchForm = document.createElement('form');
+    const searchLabel = document.createElement('label');
+    searchLabel.for = 'spelling';
+
+    const searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.name = 'spelling';
+    searchInput.id = 'spelling';
+    
+    const searchSubmit = document.createElement('input');
+    searchSubmit.type = 'submit';
+    searchSubmit.value = 'Submit';
+
+    contentDiv.append(searchForm);
+    searchForm.append(searchLabel);
+    searchForm.append(searchInput);
+    searchForm.append(searchSubmit);
+     
+    playAudio();
 }
 
 // Append audio URL for random word and play upon button click
 async function playAudio() {
+ 
     let audioData = document.querySelector("audio");
     let randomArray = [];
     for (let i = 0; i < 20; i++) {
         let randomWord = await getRandomWord();
         randomArray[i] = randomWord.word;
     }
+
+    
 
     (async () => {
         for (let i = 0; i < 20; i++) {
@@ -314,34 +341,30 @@ async function playAudio() {
             if (typeof dictionaryWord === 'object') {
                 audioData.src = dictionaryWord.audioURL;
                 audioData.play();
-                const question = document.querySelector('#play-button');
-                question.remove();
-                const spellingInput = document.createElement('input');
-                spellingInput.placeholder = 'enter spelling';
-                const spellingBtn = document.createElement('button');
-                spellingBtn.innerText = 'submit';
-                spellingBtn.setAttribute('class', 'search-button');
-
-                contentDiv.append(spellingInput);
-                contentDiv.append(spellingBtn);
-
-                spellingBtn.addEventListener('click', function() {
+                
+                // Check if input matches word's spelling
+                const searchForm = document.querySelector('form');
+                const spellingInput = document.querySelector('#spelling');
+                searchForm.addEventListener('submit', function(event) {
+                    event.preventDefault();
                     if (spellingInput.value == randomArray[i].toLowerCase()) {
-                        searchDiv.innerHTML = `<p>Wow, you got it!</p>
-                            <p>${randomArray[i].toLowerCase()}: ${dictionaryWord.def}.</p>
+                        searchDiv.innerHTML = `<p>Wow! You got it!</p>
+                            <p>${randomArray[i].toLowerCase()}</p>
+                            <p><span class='italic'>${dictionaryWord.def}.</span></p>
                             <p>Play again</p>`;
                     } else {
                         searchDiv.innerHTML = `
                             <p>You're a terrible speller.</p>
-                            <p>The answer is: ${randomArray[i].toLowerCase()}, ${dictionaryWord.def}.</p>
+                            <p>The answer is: ${randomArray[i].toLowerCase()}</p>
+                            <p><span class='italic'>${dictionaryWord.def}.</span></p>
                             <p>Try again?</p>`;
                     }
 
-                    spellingInput.remove();
-                    spellingBtn.removeAttribute('class', 'search-button');
-                    spellingBtn.innerText = 'question';
-                    
-                    spellingBtn.addEventListener('click', launchSpellingBee);
+                    searchForm.remove();
+                    const restartBtn = document.createElement('button');
+                    restartBtn.innerText = 'restart';
+                    contentDiv.append(restartBtn);
+                    restartBtn.addEventListener('click', launchSpellingBee)
                 })
                 break;
             }
