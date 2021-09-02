@@ -72,17 +72,17 @@ Here is the wireframe for the mobile layout of the app:
 | Create flashcard function | H | 2hrs| 3hrs | 3hrs |
 | Create spelling game | H | 3hrs| 2hrs | 2hrs |
 | Style spelling game | M | 3hrs| 1hr | 1hr |
-| Style 'Word of the Day' card | M | 2hrs| 1hr | 1hr |
+| Style 'Word of the Day' card | M | 2hrs| 2hrs | 2hrs |
 | Style flashcards | M | 2hrs | 2hrs | 2hrs |
 | Design media queries | H | 3hrs| 3hrs | 4hrs |
 | Return multple word meanings | L | 2hrs|  |  |
-| Continue styling games | L | 2hrs|  |  |
 | Add additional game features | L | 3hrs|  |  |
-| Add local storage function | L | 2hrs|  |  |
+| Add local storage function | L | 2hrs| 3hrs | 3hrs |
 | Total (MVP) | H | 29hrs|  |  |
 
 ## Code Snippet
 
 
 ## Change Log
-  
+Changed the nav to links in the header instead of separate buttons for a cleaner layout.
+

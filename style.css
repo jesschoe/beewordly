@@ -75,6 +75,11 @@ footer {
     background-color: #FCE28C;
 }
 
+.search-bar {
+    display: none;
+    margin: 10px;
+}
+
 .toggle {
     position: absolute;
     top: .75rem;
@@ -115,14 +120,6 @@ h3 {
     font-size: 1.2em;
 }
 
-div {
-   
-}
-
-h1 {
-    display: inline;
-}
-
 img {
     width: 40px;
     transform: rotate(45deg);
@@ -143,16 +140,20 @@ button:hover {
 }
 
 input {
-   
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     text-align: left;
-    padding: 8px;
+    padding: 8px; 
+    border: none;
+}
+
+input[type='text'], textarea {
+    background-color: #FCE28C;
 }
 
 .submit {
     border: none;
     background-color: lightgray;
-    margin: 5px;
+    
 }
 
 .submit:hover {
@@ -162,16 +163,14 @@ input {
 .remove-button {
     width: auto;
     height: auto;
+    margin: 0 0 0 10px;
 }
 
 .create-button {
     font-family: 'Ribeye Marrow', cursive;
     font-size: 1em;
-}
-
-input {
-    border:none;
-    background-color: lightgray;
+    margin: 20px 0px;
+    
 }
 
 ol {
@@ -179,10 +178,14 @@ ol {
     list-style-position: inside;
 }
 
+ol li {
+    margin: 20px;
+}
+
 .content-container {
     border: 2px solid lightgray;
     border-radius: 10px;
-    width: 70%;
+    width: 80%;
     margin: 30px auto;
     padding: 10px;
     height: auto;
@@ -210,12 +213,12 @@ ol {
     margin: 10px;
     border: 1px solid black;
     border-radius: 10px;
-    width: 250px;
+    width: 300px;
+    min-height: 400px;
     height: auto;
-    min-height: 250px;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: space-between;
 }
 
 .card-word {
@@ -235,12 +238,13 @@ ol {
 .star2 {
     width: 30px;
     align-self: flex-end;
+    justify-self: flex-end;
     margin: 10px;
 }
 
 @media screen and (max-width: 768px) {
     *{
-        font-size: 16px;
+        font-size: 18px;
     }
 
     main {
@@ -249,6 +253,10 @@ ol {
         overflow: hidden;
     }
 
+    p {
+        font-size: 1.1em;
+    }
+    
     .toggle {
         display: flex;
     }
@@ -278,31 +286,22 @@ ol {
         display: flex;
     }
 
-    
     .content-container {
-        border: 2px solid lightgray;
-        border-radius: 10px;
-        width: 70%;
-        margin: 30px auto;
-        padding: 10px;
-        height: 100%;
-        overflow: auto;
-        flex: 1;
-        
-    } 
-
-    .content-name {
-
+        width: 90%;
     }
 
+    .card-div {
+        min-height: 350px;
+    }
+}
 
-    /* button {
-        margin: 20px 0;
-        font-size: 110%;
-        width: 100px;
-        height: 70px;
-        
-    } */
+@media screen and (min-width: 1200px) {
+    .search-bar {
+        display: flex;
+    }
 
- 
-} 
+    .card-div {
+        width: 420px;
+        min-height: 350px;
+    }
+}
