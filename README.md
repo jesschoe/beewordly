@@ -49,7 +49,7 @@ Here is the wireframe for the mobile layout of the app:
 |August 30| Project Approval / Set up HTML, CSS Structure / Pseudocode JS | Complete
 |August 31| Code axios calls, functions, game | Complete
 |September 1| CSS styling, start post MVPs | Complete
-|September 2| Start post MVPs | Complete
+|September 2| Finish at least one post MVP | Complete
 |September 3| Presentation | Incomplete
 
 
@@ -111,5 +111,5 @@ function createFlashcards() {
 ```
 
 ## Change Log
-Changed the nav to links in the header instead of separate buttons for a cleaner layout.
+Changed the nav to links in the header instead of separate buttons for a cleaner layout. Have the search return both definition and synonyms on one card instead of separate search functions. 
 
