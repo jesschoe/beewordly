@@ -10,19 +10,17 @@ const randomWordURL = 'https://random-words-api.vercel.app/word';
 // Declare DOM elements
 const contentDiv = document.querySelector('#content');
 const contentName = document.querySelector('#content-name');
-const searchDiv = document.querySelector('#search-dictionary');
-const learnWordsBtn = document.querySelector('#learn-words');
-const flashcardsBtn = document.querySelector('#flashcards');
-const myWordsBtn = document.querySelector('#my-words');
-const spellingBeeBtn = document.querySelector('#spelling-bee');
+const searchDiv = document.querySelector('#search-div');
+
 console.log(document.body);
 
-// Event Listeners for nav buttons
-// learnWordsBtn.addEventListener('click', launchLearnWords);
-// learnWordsBtn.onclick = launchLearnWords;
-flashcardsBtn.addEventListener('click', launchFlashcards);
-myWordsBtn.addEventListener('click', launchMyWords);
-spellingBeeBtn.addEventListener('click', launchSpellingBee);
+// toggle function for hamburger menu
+const toggleBtn = document.querySelector('.toggle');
+const navLinks = document.querySelector('.nav-links');
+
+toggleBtn.addEventListener('click', () => {
+    navLinks.classList.toggle('active');
+});
 
 // Returns word object that contains a word's definition, part of speech, audio URL, and synonyms
 async function getDictEntry(word) {
@@ -97,7 +95,7 @@ async function getWotd() {
     contentDiv.appendChild(cardDiv);
     const cardWord = document.createElement("div");
     const cardDef = document.createElement("div")
-    cardWord.innerHTML = `<p>${wotd.word}</p>`;
+    cardWord.innerHTML = `<h3>${wotd.word}</h3>`;
     cardWord.classList.add('card-word');
     cardDef.innerText = wotd.definition;
     cardDef.classList.add('card-def');
@@ -127,6 +125,8 @@ function appendData(keyword, data) {
 // Search function to look up words from input
 function launchLearnWords(event) {
     contentDiv.innerHTML = '';
+    const ol = document.querySelector('ol');
+    ol.innerHTML = '';
     contentName.innerHTML = '<h2>Learn Words</h2>';
     searchDiv.innerHTML = '<p>search for words to learn their part of speech, meaning, and synonyms</p>'
     
@@ -140,8 +140,9 @@ function launchLearnWords(event) {
     searchInput.id = 'word';
     
     const searchSubmit = document.createElement('input');
+    searchSubmit.classList.add('submit');
     searchSubmit.type = 'submit';
-    searchSubmit.value = 'Submit';
+    searchSubmit.value = 'search';
 
     searchDiv.append(searchForm);
     searchForm.append(searchLabel);
@@ -178,46 +179,38 @@ const cardArray = [];
 function launchFlashcards() {
     contentDiv.innerHTML = '';
     contentName.innerHTML = '<h2>Flashcards</h2>';
-    searchDiv.innerHTML = '<p>enter up to 10 words to create your deck of flashcards</p>'
-    // const textInput = document.createElement('input');
-    // const addBtn = document.createElement('button');
-    // addBtn.classList.add('search-button');
-    // addBtn.innerText = 'add';
-    // textInput.placeholder = 'enter a word';
-    // searchDiv.append(textInput);
-    // searchDiv.append(addBtn);
+    searchDiv.innerHTML = '<p>enter words to create your deck of flashcards</p>'
 
-    // addBtn.addEventListener('click', addWords);
     const searchForm = document.createElement('form');
     const searchLabel = document.createElement('label');
     searchLabel.for = 'word';
 
     const searchInput = document.createElement('input');
+    searchInput.setAttribute('id', 'search-input');
     searchInput.type = 'text';
     searchInput.name = 'word';
     searchInput.id = 'word';
     
     const searchSubmit = document.createElement('input');
+    searchSubmit.classList.add('submit');
     searchSubmit.type = 'submit';
-    searchSubmit.value = 'Submit';
+    searchSubmit.value = 'add';
 
     searchDiv.append(searchForm);
     searchForm.append(searchLabel);
     searchForm.append(searchInput);
     searchForm.append(searchSubmit);
-    searchForm.addEventListener('submit', addWords);  
-}
-
-// Adds words to the flashcards array
-function addWords(event) {
-    event.preventDefault();
-    const textInput = document.querySelector('input');
-    const cardValue = textInput.value;
-    if(cardValue != "") {
-    cardArray.push(cardValue);
-    // clear input
-    textInput.value = "";
-    appendCardList();
+    searchForm.addEventListener('submit', addWords);
+    
+    function addWords(event) {
+        event.preventDefault();
+        const cardValue = searchInput.value;
+        if(cardValue != "") {
+        cardArray.push(cardValue);
+        // clear input
+        searchInput.value = "";
+        appendCardList();
+    }
     }
 }
 
@@ -236,7 +229,7 @@ function appendCardList() {
         }
 
         const button = document.createElement("button");
-        button.classList.add('search-button');
+        button.classList.add('submit');
         button.addEventListener("click", () => removeCard(index));
         button.innerText = "remove";
 
@@ -247,6 +240,7 @@ function appendCardList() {
     
     const flashcardsBtn = document.createElement('button');
     flashcardsBtn.classList.add('create-button');
+    flashcardsBtn.classList.add('submit');
     flashcardsBtn.innerText = 'create flashcards';
     cardListDiv.appendChild(flashcardsBtn);
     flashcardsBtn.addEventListener('click', createFlashcards)
@@ -266,7 +260,7 @@ async function createFlashcards() {
             let cardData = await getDictEntry(card);
             const cardWord = document.createElement("div");
             const cardDef = document.createElement("div")
-            cardWord.innerHTML = `<p>${card}</p>`;
+            cardWord.innerHTML = `<h3>${card}</h3>`;
             cardWord.classList.add('card-word');
             
             cardDef.innerText = cardData.def;
@@ -294,6 +288,8 @@ function launchMyWords() {
 // Launch spelling game that plays audio for random words and check to see if user spelled it correctly
 function launchSpellingBee() {
     contentDiv.innerHTML = '';
+    const ol = document.querySelector('ol');
+    ol.innerHTML = '';
     contentName.innerHTML = '<h2>Spelling Bee!</h2>';
     searchDiv.innerHTML = "<p>Get ready.. the word will only play once!</p><p>Type your guess here:</p>";
 
@@ -311,8 +307,9 @@ function launchSpellingBee() {
     searchInput.id = 'spelling';
     
     const searchSubmit = document.createElement('input');
+    searchSubmit.classList.add('submit');
     searchSubmit.type = 'submit';
-    searchSubmit.value = 'Submit';
+    searchSubmit.value = 'submit';
 
     contentDiv.append(searchForm);
     searchForm.append(searchLabel);
@@ -332,8 +329,6 @@ async function playAudio() {
         randomArray[i] = randomWord.word;
     }
 
-    
-
     (async () => {
         for (let i = 0; i < 20; i++) {
             let dictionaryWord = await getDictEntry(randomArray[i]);
@@ -349,20 +344,21 @@ async function playAudio() {
                     event.preventDefault();
                     if (spellingInput.value == randomArray[i].toLowerCase()) {
                         searchDiv.innerHTML = `<p>Wow! You got it!</p>
-                            <p>${randomArray[i].toLowerCase()}</p>
+                            <h3>${randomArray[i].toLowerCase()}</h3>
                             <p><span class='italic'>${dictionaryWord.def}.</span></p>
                             <p>Play again</p>`;
                     } else {
                         searchDiv.innerHTML = `
                             <p>You're a terrible speller.</p>
-                            <p>The answer is: ${randomArray[i].toLowerCase()}</p>
-                            <p><span class='italic'>${dictionaryWord.def}.</span></p>
-                            <p>Try again?</p>`;
+                            <p>The answer is:</p>
+                            <h3>${randomArray[i].toLowerCase()}</h3>
+                            <p>${dictionaryWord.def}</p>`;
                     }
 
                     searchForm.remove();
                     const restartBtn = document.createElement('button');
-                    restartBtn.innerText = 'restart';
+                    restartBtn.classList.add('create-button', 'submit');
+                    restartBtn.innerText = 'play again';
                     contentDiv.append(restartBtn);
                     restartBtn.addEventListener('click', launchSpellingBee)
                 })

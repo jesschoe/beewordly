@@ -7,6 +7,7 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="./script.js" defer></script>
     <link rel="stylesheet" href="./style.css" type="text/css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Ribeye+Marrow&display=swap');
         </style>
@@ -14,19 +15,27 @@
 </head>
 <body onload="getWotd()">
     <header>
-        <h1>bee.wordly</h1>
-        <img src='./images/bee.svg' />
-        <nav>
-            <ul>
-                <li><a href="#" onclick="launchLearnWords(); return false;">learn words</a></li>
-                <li><a href="#" onclick="launchFlashcards(); return false;">flashcards</a></li>
-                <li><a href="#" onclick="launchSpellingBee(); return false;">spelling bee</a></li>
-                <li><a href="#" onclick="launchMyWords(); return false;">my words</a></li>
-            </ul>
-        </nav> <!-- <button id='flashcards'>flash<br/>cards</button>
-            <button id='my-words'>my<br/>words</button>
-            <button id='spelling-bee'>spelling<br/>bee</button> -->
-        
+        <nav class='navbar'>
+            <a href="/">
+            <div class='site-name'>
+                bee.wordly
+                <img src='./images/bee.svg' />
+            </div>
+            </a>
+            <a href='#' class='toggle'>
+                <span class='bar'></span>
+                <span class='bar'></span>
+                <span class='bar'></span>
+            </a>
+            <div class='nav-links'>
+                <ul class='menu'>
+                    <li><a href='#' onclick='launchLearnWords(); return false;'>learn words</a></li>
+                    <li><a href='#' onclick='launchFlashcards(); return false;'>flashcards</a></li>
+                    <li><a href='#' onclick='launchSpellingBee(); return false;'>spelling bee</a></li>
+                    <li><a href='#' onclick='launchMyWords(); return false;'>my words</a></li>
+                </ul>
+            </div>
+        </nav>
     </header>
     <main>
         
@@ -34,16 +43,18 @@
             <div id='content-name'>
                 <h2 id='wotd-word'>Word of the Day</h2>
             </div>
-            <div id='search-dictionary'>
-            </div>
-            <div id='content'></div>
-            <ol>
-            </ol>
+            <div class='content-box'>
+                <div id='search-div'>
+                </div>
+                <div id='content'>
+                </div>
+                <ol>
+                </ol>
             </div>
         </div>
     </main>
     <footer>
-       
+      
     </footer>
     
 </body>
