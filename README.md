@@ -75,7 +75,7 @@ Here is the wireframe for the mobile layout of the app:
 | Style 'Word of the Day' card | M | 2hrs| 1hr | 1hr |
 | Style flashcards | M | 2hrs | 2hrs | 2hrs |
 | Design media queries | H | 3hrs| 3hrs | 4hrs |
-| Create synonym game | L | 3hrs|  |  |
+| Return multple word meanings | L | 2hrs|  |  |
 | Continue styling games | L | 2hrs|  |  |
 | Add additional game features | L | 3hrs|  |  |
 | Add local storage function | L | 2hrs|  |  |

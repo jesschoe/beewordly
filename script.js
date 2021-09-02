@@ -27,7 +27,7 @@ async function getDictEntry(word) {
     try{
         // get data for word from dictionary API
         let res = await axios.get(`${dictBaseURL}${word}${dictKey}`);
-        // console.log(res)
+        console.log(res)
         // If there is no dictionary entry for the word, return suggestion
         if (typeof res.data[0] === 'string') {
             const suggestions = res.data[0];
@@ -47,13 +47,6 @@ async function getDictEntry(word) {
             } else {
                 audioSub = audioName[0];
             }
-
-            // let wordDef = res.data[0].shortdef[0];
-            // for (let i = 0; i < wordDef.length; i++) {
-            //     if (wordDef[i] === '-') {
-            //         let shortDef = wordDef.substring(i,10)
-            //     }
-            // }
             
             const wordObject = {
                 def: res.data[0].shortdef[0],
@@ -78,6 +71,9 @@ async function getThesEntry(word) {
             return res.data[0];
         } else {
             let synonyms = res.data[0].meta.syns[0];
+            if (synonyms.length > 5) {
+                synonyms.splice(4);
+            }
             return synonyms;
         }   
     } catch (error) {
@@ -101,7 +97,6 @@ async function getWotd() {
     cardDef.classList.add('card-def');
     cardDiv.appendChild(cardWord);
     cardWord.appendChild(cardDef);
-   
 }
 
  // Get random word from random word generator API
@@ -116,10 +111,35 @@ async function getRandomWord() {
 }
 
 // Append data to page by keyword and content
-function appendData(keyword, data) {
-    let newContent = document.createElement('p');
-    newContent.innerText = `${keyword}: ${data}`;
-    contentDiv.appendChild(newContent);
+function createWordCard(word, wordObj) {
+    let synsStr = 'no synonyms';
+    if (typeof wordObj.syns === 'object') {
+        synsStr = (wordObj.syns).join(', ');
+    } 
+
+    let cardDiv = document.createElement('div');
+    cardDiv.classList.add('card-div');
+    contentDiv.appendChild(cardDiv);
+
+    const cardWord = document.createElement("div");
+    cardWord.classList.add('card-word', `word${word}`);
+    cardWord.innerHTML = `<h3>${word}</h3>`;
+
+    const cardDef = document.createElement("div");
+    cardDef.classList.add('card-def',`${word}`);
+    cardDef.innerHTML =`<p>${wordObj.pos}-- ${wordObj.def}</p><p>synonyms: ${synsStr}</p>`;
+    
+    const myWordsDiv = document.createElement('div');
+    const myWordsBtn = document.createElement('img');
+    myWordsBtn.src = './images/star1.svg';
+    myWordsBtn.setAttribute('id', word)
+    myWordsBtn.classList.add('star1');
+    myWordsBtn.addEventListener('click', saveWord);
+
+
+    cardDiv.appendChild(cardWord);
+    cardWord.appendChild(cardDef);
+    cardDiv.appendChild(myWordsBtn);
 }
 
 // Search function to look up words from input
@@ -158,17 +178,23 @@ function launchLearnWords(event) {
             contentDiv.innerHTML = '';
             const inputValue = searchInput.value;
             let wordObj = await getDictEntry(inputValue);
-            searchInput.value = '';
+            
             
             if (typeof wordObj === 'string') {
-                appendData(`did you mean`, wordObj)
+                const suggest = document.createElement('div');
+                suggest.setAttribute('id', 'suggest');
+                suggest.innerHTML = `did you mean ${wordObj}?`
+                searchDiv.append(suggest);
             } else {
-                appendData('part of speech', wordObj.pos);
-                appendData('definition', wordObj.def);
-    
-                let synsStr = (wordObj.syns).join(', ');
-                appendData('synonyms', synsStr)
+                const suggest = document.querySelector('#suggest');
+                console.log(typeof suggest)
+                if (suggest !== null) {
+                    suggest.remove();
+                }
+                createWordCard(inputValue, wordObj);
             }
+
+            searchInput.value = '';
         })()
     }
 }
@@ -229,7 +255,7 @@ function appendCardList() {
         }
 
         const button = document.createElement("button");
-        button.classList.add('submit');
+        button.classList.add('remove-button', 'submit');
         button.addEventListener("click", () => removeCard(index));
         button.innerText = "remove";
 
@@ -239,8 +265,7 @@ function appendCardList() {
     });
     
     const flashcardsBtn = document.createElement('button');
-    flashcardsBtn.classList.add('create-button');
-    flashcardsBtn.classList.add('submit');
+    flashcardsBtn.classList.add('create-button', 'submit');
     flashcardsBtn.innerText = 'create flashcards';
     cardListDiv.appendChild(flashcardsBtn);
     flashcardsBtn.addEventListener('click', createFlashcards)
@@ -249,26 +274,34 @@ function appendCardList() {
 // Populate flashcards on the page for each word on the list
 async function createFlashcards() {
     contentDiv.innerHTML = '';
-    let cardDiv = document.createElement('div');
-    cardDiv.classList.add('card-div');
-    contentDiv.appendChild(cardDiv);
+    // let cardDiv = document.createElement('div');
+    // cardDiv.classList.add('card-div');
+    // contentDiv.appendChild(cardDiv);
     searchDiv.innerHTML = '<p>click to see definition</p>';
     document.querySelector('ol').innerHTML = '';
     
     cardArray.forEach((card) => {
         (async () => {
-            let cardData = await getDictEntry(card);
-            const cardWord = document.createElement("div");
-            const cardDef = document.createElement("div")
-            cardWord.innerHTML = `<h3>${card}</h3>`;
-            cardWord.classList.add('card-word');
-            
-            cardDef.innerText = cardData.def;
-            cardDef.classList.add('card-def');
+            let wordObj = await getDictEntry(card);
+
+            createWordCard(card, wordObj);
+            const cardWord = document.querySelector(`.word${card}`);
+            const cardDef = document.querySelector(`.${card}`)
             cardDef.style.display = 'none';
 
-            cardDiv.appendChild(cardWord);
-            cardWord.appendChild(cardDef);
+            // const cardWord = document.createElement("div");
+            // const cardDef = document.createElement("div");
+            // cardWord.innerHTML = `<h3>${card}</h3>`;
+            // cardWord.classList.add('card-word');
+            // let synsStr = (wordObj.syns).join(', ');
+
+            // cardDef.innerHTML =`<p>${wordObj.pos}-- ${wordObj.def}</p>
+            //         <p>synonyms: ${synsStr}</p>`;
+            // cardDef.classList.add('card-def');
+            // 
+
+            // cardDiv.appendChild(cardWord);
+            // cardWord.appendChild(cardDef);
 
             cardWord.addEventListener('click', function() {
                 if (cardDef.style.display === 'none') {
@@ -281,8 +314,63 @@ async function createFlashcards() {
     });
 }
 
-function launchMyWords() {
+function saveWord(event) {
+    const wordClass = event.path[0].classList[0];
+    const saveBtn = event.path[0].src;
+    const getWord = document.querySelector(`.${wordClass}`);
 
+    if(wordClass === 'star1') {
+        getWord.src = './images/star2.svg';
+        const word = event.path[0].id;
+        localStorage.setItem(word, word);
+    } else {
+        getWord.src = './images/star1.svg';
+        const word = event.path[0].id;
+        localStorage.removeItem(word);
+    }
+}
+
+function launchMyWords() {
+    contentDiv.innerHTML = '';
+    contentName.innerHTML = '<h2>My Words</h2>';
+    searchDiv.innerHTML = '<p>manage your saved words here</p>'
+    const clearBtn = document.createElement('button');
+    clearBtn.innerText ='clear all words'
+    clearBtn.classList.add('create-button');
+    searchDiv.append(clearBtn);
+
+    clearBtn.addEventListener('click', () => {
+        localStorage.clear();
+        launchMyWords();
+    })
+
+    let savedWords = [];
+    let keys = Object.keys(localStorage);
+
+    for (const [key, value] of Object.entries(localStorage)) {
+        savedWords.push(`${value}`);
+    }
+
+    savedWords.forEach(word => {
+        (async () => {
+            dictEntry = await getDictEntry(word);
+            createWordCard(word, dictEntry);
+            let starred = document.querySelector('.star1');
+            starred.src = './images/star2.svg';
+            starred.setAttribute('id', word)
+            starred.classList.remove('star1');
+            starred.classList.add('star2');
+            starred.addEventListener('click', removeSavedWord);
+        })()
+    })
+
+}
+
+function removeSavedWord(event) {
+    console.log(event)
+    localStorage.removeItem(`${event.path[0].id}`)
+    launchMyWords();
+    
 }
 
 // Launch spelling game that plays audio for random words and check to see if user spelled it correctly
@@ -343,16 +431,12 @@ async function playAudio() {
                 searchForm.addEventListener('submit', function(event) {
                     event.preventDefault();
                     if (spellingInput.value == randomArray[i].toLowerCase()) {
-                        searchDiv.innerHTML = `<p>Wow! You got it!</p>
-                            <h3>${randomArray[i].toLowerCase()}</h3>
-                            <p><span class='italic'>${dictionaryWord.def}.</span></p>
-                            <p>Play again</p>`;
+                        searchDiv.innerHTML = `<p>Wow! You got it!</p>`
+                        createWordCard(randomArray[i].toLowerCase(), dictionaryWord);
                     } else {
-                        searchDiv.innerHTML = `
-                            <p>You're a terrible speller.</p>
-                            <p>The answer is:</p>
-                            <h3>${randomArray[i].toLowerCase()}</h3>
-                            <p>${dictionaryWord.def}</p>`;
+                        searchDiv.innerHTML = `<p>You're a terrible speller.</p>
+                            <p>The answer is:</p>`
+                        createWordCard(randomArray[i].toLowerCase(), dictionaryWord);
                     }
 
                     searchForm.remove();

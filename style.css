@@ -2,7 +2,7 @@
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     text-align: center;
     box-sizing: border-box;
-    font-size: 18px;
+    font-size: 20px;
     /* border: 1px solid black; */
 }
 
@@ -104,11 +104,11 @@ h1,
 h2,
 h3 {
     font-family: 'Ribeye Marrow', cursive;
-    font-size: 2.3em;
+    font-size: 2.1em;
 }
 
 h2 {
-    font-size: 1.8em;
+    font-size: 1.6em;
 }
 
 h3 {
@@ -159,6 +159,16 @@ input {
     background-color: #FCE28C;
 }
 
+.remove-button {
+    width: auto;
+    height: auto;
+}
+
+.create-button {
+    font-family: 'Ribeye Marrow', cursive;
+    font-size: 1em;
+}
+
 input {
     border:none;
     background-color: lightgray;
@@ -167,14 +177,6 @@ input {
 ol {
     text-align: center;
     list-style-position: inside;
-}
-
-
-.create-button {
-    height: 30px;
-    font-size: 1em;
-    width: 150px;
-    margin-top: 40px;
 }
 
 .content-container {
@@ -198,25 +200,29 @@ ol {
     overflow: auto;
 }
 
-.card-div {
+#content {
     display: flex;
     flex-flow: row wrap;
     justify-content: center;
-    flex: 1 1 auto;
 }
 
-.card-word {
-    width: 40%;
-    min-width: 200px;
-    height: auto;
-    min-height: 250px;
+.card-div {
+    margin: 10px;
     border: 1px solid black;
     border-radius: 10px;
-    font-size: 1.3em;
+    width: 250px;
+    height: auto;
+    min-height: 250px;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
+}
+
+.card-word {
+    overflow-wrap: break-word;
+    font-size: 1.3em;
     margin: 10px;
+    padding: 5px;
 }
 
 .card-def {
@@ -225,7 +231,14 @@ ol {
     padding: 10px;
 }
 
-@media screen and (max-width: 700px) {
+.star1,
+.star2 {
+    width: 30px;
+    align-self: flex-end;
+    margin: 10px;
+}
+
+@media screen and (max-width: 768px) {
     *{
         font-size: 16px;
     }
@@ -283,13 +296,13 @@ ol {
     }
 
 
-    button {
+    /* button {
         margin: 20px 0;
         font-size: 110%;
         width: 100px;
         height: 70px;
         
-    }
+    } */
 
  
 } 
