@@ -14,8 +14,6 @@ const searchDiv = document.querySelector('#search-div');
 const searchSubmit = document.querySelector('.search-bar');
 searchSubmit.addEventListener('submit', searchDict)
 
-console.log(document.body);
-
 // toggle function for hamburger menu
 const toggleBtn = document.querySelector('.toggle');
 const navLinks = document.querySelector('.nav-links');
@@ -29,7 +27,7 @@ async function getDictEntry(word) {
     try{
         // get data for word from dictionary API
         let res = await axios.get(`${dictBaseURL}${word}${dictKey}`);
-        console.log(res)
+      
         // If there is no dictionary entry for the word, return suggestion
         if (typeof res.data[0] === 'string') {
             const suggestions = res.data[0];
@@ -85,20 +83,14 @@ async function getThesEntry(word) {
 
 // Appends word of the day to page on load/refresh
 async function getWotd() {
-    let wotd = await getRandomWord();
-    contentName.innerHTML = `<h2>Word of the Day<h2>`;
-    let cardDiv = document.createElement('div');
-    cardDiv.classList.add('card-div');
-    cardDiv.setAttribute('id', 'wotd');
-    contentDiv.appendChild(cardDiv);
-    const cardWord = document.createElement("div");
-    const cardDef = document.createElement("div")
-    cardWord.innerHTML = `<h3>${wotd.word}</h3>`;
-    cardWord.classList.add('card-word');
-    cardDef.innerText = wotd.definition;
-    cardDef.classList.add('card-def');
-    cardDiv.appendChild(cardWord);
-    cardWord.appendChild(cardDef);
+    let randomWord = await getRandomWord();
+    let dictionaryWord = await getDictEntry(randomWord.word);
+
+    if (typeof dictionaryWord === 'string') {
+        getWotd();
+    } else {
+        createWordCard(randomWord.word, dictionaryWord);
+    }
 }
 
  // Get random word from random word generator API
@@ -134,6 +126,7 @@ function createWordCard(word, wordObj) {
     const myWordsDiv = document.createElement('div');
     const myWordsBtn = document.createElement('img');
     myWordsBtn.src = './images/star1.svg';
+    myWordsBtn.alt = 'empty star icon';
     myWordsBtn.setAttribute('id', `${word}`)
     myWordsBtn.classList.add('star1');
     myWordsBtn.addEventListener('click', saveWord);
@@ -141,6 +134,31 @@ function createWordCard(word, wordObj) {
     cardDiv.appendChild(cardWord);
     cardWord.appendChild(cardDef);
     cardDiv.appendChild(myWordsBtn);
+}
+
+// Toggle icons and class names for starred words
+function saveWord(event) {
+    const wordClass = event.path[0].classList[0];
+    const wordId = event.path[0].id;
+    const getWord = document.querySelector(`#${wordId}`);
+ 
+    if(wordClass === 'star1') {
+        getWord.src = './images/star2.svg';
+        getWord.alt = 'filled star icon';
+        getWord.classList.remove('star1');
+        getWord.classList.add('star2');
+        const word = event.path[0].id;
+        localStorage.setItem(word, word);
+        getWord.addEventListener('click', saveWord);
+    } else {
+        getWord.src = './images/star1.svg';
+        getWord.alt = 'empty star icon';
+        getWord.classList.remove('star2');
+        getWord.classList.add('star1');
+        const word = event.path[0].id;
+        localStorage.removeItem(word);
+        getWord.addEventListener('click', saveWord);
+    }
 }
 
 // Create a form
@@ -270,7 +288,7 @@ function appendCardList() {
 }
 
 // Populate flashcards on the page for each word on the list
-async function createFlashcards() {
+function createFlashcards() {
     contentDiv.innerHTML = '';
     searchDiv.innerHTML = '<p>click to see definition</p>';
     document.querySelector('ol').innerHTML = '';
@@ -295,26 +313,60 @@ async function createFlashcards() {
     });
 }
 
-// Toggle icons and class names for starred words
-function saveWord(event) {
-    const wordClass = event.path[0].classList[0];
-    const wordId = event.path[0].id;
-    const getWord = document.querySelector(`#${wordId}`);
-    console.log(wordId)
-    if(wordClass === 'star1') {
-        getWord.src = './images/star2.svg';
-        getWord.classList.remove('star1');
-        getWord.classList.add('star2');
-        const word = event.path[0].id;
-        localStorage.setItem(word, word);
-        getWord.addEventListener('click', saveWord);
+// Launch spelling game that plays audio for random words and check to see if user spelled it correctly
+function launchSpellingBee() {
+    contentDiv.innerHTML = '';
+    const ol = document.querySelector('ol');
+    ol.innerHTML = '';
+    contentName.innerHTML = '<h2>Spelling Bee!</h2>';
+    searchDiv.innerHTML = "<p>Get ready.. the word will only play once!</p><p>Type your guess here:</p>";
+
+    const audioDiv = document.createElement('audio');
+    searchDiv.append(audioDiv);
+    
+    createForm();
+    const submitBtn = document.querySelector('.new-submit');
+    submitBtn.value = 'submit';
+    playAudio();
+}
+
+// Append audio URL for random word and play upon loading content
+async function playAudio() {
+ 
+    let audioData = document.querySelector("audio");
+    let randomWord = await getRandomWord();
+    let dictionaryWord = await getDictEntry(randomWord.word);
+
+    if (typeof dictionaryWord === 'string') {
+        playAudio();
     } else {
-        getWord.src = './images/star1.svg';
-        getWord.classList.remove('star2');
-        getWord.classList.add('star1');
-        const word = event.path[0].id;
-        localStorage.removeItem(word);
-        getWord.addEventListener('click', saveWord);
+        audioData.src = dictionaryWord.audioURL;
+        audioData.play();
+                
+        const searchForm = document.querySelector('#new-form');
+        const spellingInput = document.querySelector('#word');
+        const restartBtn = document.createElement('button');
+        restartBtn.classList.add('create-button', 'submit');
+        restartBtn.innerText = 'play again';
+                
+        // Check if input matches word's spelling
+        searchForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+            if (spellingInput.value === randomWord.word.toLowerCase()) {
+                searchDiv.innerHTML = `<p>Wow! You got it!</p>`;
+                restartBtn.addEventListener('click', launchSpellingBee);
+                searchDiv.append(restartBtn);
+                createWordCard(randomWord.word.toLowerCase(), dictionaryWord);
+            } else {
+                searchDiv.innerHTML = `<p>You're a terrible speller.</p>`;
+                restartBtn.addEventListener('click', launchSpellingBee);
+                searchDiv.append(restartBtn);
+                createWordCard(randomWord.word.toLowerCase(), dictionaryWord);
+            }
+            searchForm.remove();
+        })
+                
     }
 }
 
@@ -324,8 +376,8 @@ function launchMyWords() {
     contentName.innerHTML = '<h2>My Words</h2>';
     searchDiv.innerHTML = '<p>manage your saved words here</p>'
     const clearBtn = document.createElement('button');
-    clearBtn.innerText ='clear all words'
-    clearBtn.classList.add('create-button');
+    clearBtn.innerText ='clear all words';
+    clearBtn.classList.add('create-button', 'submit');
     searchDiv.append(clearBtn);
 
     clearBtn.addEventListener('click', () => {
@@ -356,71 +408,6 @@ function launchMyWords() {
 
 // Remove a saved word from local storage
 function removeSavedWord(event) {
-    console.log(event)
     localStorage.removeItem(`${event.path[0].id}`)
     launchMyWords();
-}
-
-// Launch spelling game that plays audio for random words and check to see if user spelled it correctly
-function launchSpellingBee() {
-    contentDiv.innerHTML = '';
-    const ol = document.querySelector('ol');
-    ol.innerHTML = '';
-    contentName.innerHTML = '<h2>Spelling Bee!</h2>';
-    searchDiv.innerHTML = "<p>Get ready.. the word will only play once!</p><p>Type your guess here:</p>";
-
-    const audioDiv = document.createElement('audio');
-    searchDiv.append(audioDiv);
-    
-    createForm();
-    const submitBtn = document.querySelector('.new-submit');
-    submitBtn.value = 'submit';
-    playAudio();
-}
-
-// Append audio URL for random word and play upon button click
-async function playAudio() {
- 
-    let audioData = document.querySelector("audio");
-    let randomArray = [];
-    for (let i = 0; i < 20; i++) {
-        let randomWord = await getRandomWord();
-        randomArray[i] = randomWord.word;
-    }
-
-    (async () => {
-        for (let i = 0; i < 20; i++) {
-            let dictionaryWord = await getDictEntry(randomArray[i]);
-    
-            if (typeof dictionaryWord === 'object') {
-                audioData.src = dictionaryWord.audioURL;
-                audioData.play();
-                
-                // Append play again button
-                const searchForm = document.querySelector('#new-form');
-                const spellingInput = document.querySelector('#word');
-                const restartBtn = document.createElement('button');
-                restartBtn.classList.add('create-button', 'submit');
-                restartBtn.innerText = 'play again';
-                
-                // Check if input matches word's spelling
-                searchForm.addEventListener('submit', function(event) {
-                    event.preventDefault();
-                    if (spellingInput.value == randomArray[i].toLowerCase()) {
-                        searchDiv.innerHTML = `<p>Wow! You got it!</p>`;
-                        restartBtn.addEventListener('click', launchSpellingBee);
-                        searchDiv.append(restartBtn);
-                        createWordCard(randomArray[i].toLowerCase(), dictionaryWord);
-                    } else {
-                        searchDiv.innerHTML = `<p>You're a terrible speller.</p>`;
-                        restartBtn.addEventListener('click', launchSpellingBee);
-                        searchDiv.append(restartBtn);
-                        createWordCard(randomArray[i].toLowerCase(), dictionaryWord);
-                    }
-                    searchForm.remove();
-                })
-                break;
-            }
-        }
-    })()
 }

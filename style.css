@@ -3,7 +3,6 @@
     text-align: center;
     box-sizing: border-box;
     font-size: 20px;
-    /* border: 1px solid black; */
 }
 
 body {
@@ -120,7 +119,7 @@ h3 {
     font-size: 1.2em;
 }
 
-img {
+.bee {
     width: 40px;
     transform: rotate(45deg);
 }
@@ -219,6 +218,7 @@ ol li {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    box-shadow: 5px 5px 7px lightgray;
 }
 
 .card-word {
@@ -245,12 +245,6 @@ ol li {
 @media screen and (max-width: 768px) {
     *{
         font-size: 18px;
-    }
-
-    main {
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
     }
 
     p {
