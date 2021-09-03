@@ -5,6 +5,8 @@
 ## Project Description
 An app that gives you a word of the day, along with search functions for definitions and synonyms, flashcards, and a spelling game to help you 'bee wordly'!
 
+[Deployed Project](https://jesschoe.github.io/beewordly/)
+
 ## API and Data Sample
 
 I'll be using the Merriam Webster Dictionary API for word details and audio files:
