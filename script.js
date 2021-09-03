@@ -2,7 +2,6 @@
 const dictBaseURL = 'https://www.dictionaryapi.com/api/v3/references/collegiate/json/';
 const dictKey = '?key=9aed0fc9-9efb-4167-83b0-c665d40f56b7';
 const audioBaseURL = 'https://media.merriam-webster.com/audio/prons/en/us/mp3/'
-let audioURL = '';
 const thesBaseURL = 'https://www.dictionaryapi.com/api/v3/references/thesaurus/json/';
 const thesKey = '?key=55b8d793-ca1e-4767-9965-51dff650f096'
 const randomWordURL = 'https://random-words-api.vercel.app/word';
@@ -23,15 +22,15 @@ toggleBtn.addEventListener('click', () => {
 });
 
 // Returns word object that contains a word's definition, part of speech, audio URL, and synonyms
+// Returns string of closest word in the dictionary if word is not found
 async function getDictEntry(word) {
     try{
         // get data for word from dictionary API
         let res = await axios.get(`${dictBaseURL}${word}${dictKey}`);
-      
         // If there is no dictionary entry for the word, return suggestion
         if (typeof res.data[0] === 'string') {
-            const suggestions = res.data[0];
-            return suggestions;
+            const suggestion = res.data[0];
+            return suggestion;
         } else {
             let audio = res.data[0].hwi.prs[0].sound;
             let audioName = audio.audio;
@@ -54,6 +53,7 @@ async function getDictEntry(word) {
                 audioURL: `${audioBaseURL}${audioSub}/${audioName}.mp3`,
                 syns: await getThesEntry(word),
             };
+
             return wordObject;
         }
     } catch (error) {
@@ -70,6 +70,7 @@ async function getThesEntry(word) {
         if (typeof res.data[0] === 'string') {
             return res.data[0];
         } else {
+            // Reduce longer lists to max of 5 synonyms
             let synonyms = res.data[0].meta.syns[0];
             if (synonyms.length > 5) {
                 synonyms.splice(4);
@@ -81,7 +82,7 @@ async function getThesEntry(word) {
     }
 }
 
-// Appends word of the day to page on load/refresh
+// Append word of the day to page on load/refresh
 async function getWotd() {
     let randomWord = await getRandomWord();
     let dictionaryWord = await getDictEntry(randomWord.word);
@@ -93,7 +94,7 @@ async function getWotd() {
     }
 }
 
- // Get random word from random word generator API
+// Get random word from random word generator API
 async function getRandomWord() {
     try{
         let res = await axios.get(`${randomWordURL}`);
@@ -123,7 +124,6 @@ function createWordCard(word, wordObj) {
     cardDef.classList.add('card-def',`${word}`);
     cardDef.innerHTML =`<p>${wordObj.pos}-- ${wordObj.def}</p><p>synonyms: ${synsStr}</p>`;
     
-    const myWordsDiv = document.createElement('div');
     const myWordsBtn = document.createElement('img');
     myWordsBtn.src = './images/star1.svg';
     myWordsBtn.alt = 'empty star icon';
@@ -169,6 +169,7 @@ function createForm() {
     searchLabel.for = 'word';
 
     const searchInput = document.createElement('input');
+    searchInput.classList.add('new-input');
     searchInput.type = 'text';
     searchInput.placeholder = 'enter a word';
     searchInput.name = 'word';
@@ -215,7 +216,6 @@ function searchDict(event) {
             searchDiv.append(suggest);
         } else {
             const suggest = document.querySelector('#suggest');
-            console.log(typeof suggest)
             if (suggest !== null) {
                 suggest.remove();
             }
@@ -230,7 +230,7 @@ function searchDict(event) {
 
 const cardArray = [];
 
-// Allows user to input words and creates a set of flashcards that toggles between showing/hiding definition
+// Allows user to input words and create an array of words to turn into flashcards
 function launchFlashcards() {
     contentDiv.innerHTML = '';
     contentName.innerHTML = '<h2>Flashcards</h2>';
@@ -256,7 +256,7 @@ function launchFlashcards() {
     }
 }
 
-// Append words to list of flashcards to create
+// Append list of words to page with remove buttons for each word
 function appendCardList() {
     const cardListDiv = document.querySelector('ol');
     cardListDiv.innerHTML = '';
@@ -313,7 +313,7 @@ function createFlashcards() {
     });
 }
 
-// Launch spelling game that plays audio for random words and check to see if user spelled it correctly
+// Launch spelling game that plays audio for random words
 function launchSpellingBee() {
     contentDiv.innerHTML = '';
     const ol = document.querySelector('ol');
@@ -326,13 +326,14 @@ function launchSpellingBee() {
     
     createForm();
     const submitBtn = document.querySelector('.new-submit');
+    const textInput = document.querySelector('.new-input');
+    textInput.placeholder = 'enter spelling';
     submitBtn.value = 'submit';
     playAudio();
 }
 
-// Append audio URL for random word and play upon loading content
+// Append audio URL for random word and check user input for correct spelling
 async function playAudio() {
- 
     let audioData = document.querySelector("audio");
     let randomWord = await getRandomWord();
     let dictionaryWord = await getDictEntry(randomWord.word);
@@ -387,7 +388,6 @@ function launchMyWords() {
 
     let savedWords = [];
     let keys = Object.keys(localStorage);
-
     for (const [key, value] of Object.entries(localStorage)) {
         savedWords.push(`${value}`);
     }
